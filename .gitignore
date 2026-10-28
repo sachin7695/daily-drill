@@ -5,3 +5,6 @@ __pycache__/
 *.p12
 *.jks
 *.keystore
+
+# Private notes: never commit
+context.md

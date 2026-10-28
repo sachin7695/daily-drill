@@ -1,0 +1,1025 @@
+{
+ "id": "interview",
+ "title": "Interview Track",
+ "python": "3.13.13",
+ "topics": [
+  {
+   "id": "practical",
+   "title": "Practical Build Rounds"
+  },
+  {
+   "id": "dsa",
+   "title": "DSA Patterns in Python"
+  },
+  {
+   "id": "numerics",
+   "title": "ML Numerics"
+  },
+  {
+   "id": "llm",
+   "title": "LLM & Transformer Engineering"
+  }
+ ],
+ "questions": [
+  {
+   "id": "IV-PRC-001",
+   "revision": 1,
+   "subject": "interview",
+   "topic": "practical",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "class Bank:\n    def __init__(self):\n        self.balances = {}\n    def deposit(self, acct, amt):\n        self.balances[acct] = self.balances.get(acct, 0) + amt\n        return self.balances[acct]\n    def transfer(self, src, dst, amt):\n        if self.balances.get(src, 0) < amt:\n            return None\n        self.balances[src] -= amt\n        self.deposit(dst, amt)\n        return self.balances[src]\nb = Bank()\nb.deposit(\"a\", 100)\nprint(b.transfer(\"a\", \"b\", 30), b.transfer(\"a\", \"c\", 80), b.balances)",
+   "choices": [
+    "70 None {'a': 70, 'b': 30}",
+    "70 -10 {'a': -10, 'b': 30, 'c': 80}",
+    "70 None {'a': 70, 'b': 30, 'c': 0}",
+    "None None {'a': 100}"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "Validate first, then mutate: a failed operation must leave state untouched.",
+   "reasoning": "The first transfer succeeds and returns the new source balance, 70. The second asks for 80 but only 70 is available, so it returns None before touching any balance. 'c' is never created.",
+   "commonTrap": "Mutating before validating, which leaves half-applied state when a later check fails. Graders' hidden tests target exactly this.",
+   "monoChoices": true
+  },
+  {
+   "id": "IV-PRC-002",
+   "revision": 1,
+   "subject": "interview",
+   "topic": "practical",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "from collections import OrderedDict\nclass LRU:\n    def __init__(self, cap):\n        self.cap, self.d = cap, OrderedDict()\n    def get(self, k):\n        if k not in self.d:\n            return -1\n        self.d.move_to_end(k)\n        return self.d[k]\n    def put(self, k, v):\n        self.d[k] = v\n        self.d.move_to_end(k)\n        if len(self.d) > self.cap:\n            self.d.popitem(last=False)\nc = LRU(2)\nc.put(\"a\", 1); c.put(\"b\", 2); c.get(\"a\"); c.put(\"c\", 3)\nprint(list(c.d))",
+   "choices": [
+    "['a', 'c']",
+    "['b', 'c']",
+    "['a', 'b']",
+    "['c', 'a']"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "An LRU cache is an OrderedDict: move_to_end on every access, popitem(last=False) to evict the oldest.",
+   "reasoning": "get('a') makes 'a' the most recent, so 'b' is now the least recent. Inserting 'c' pushes the size to 3, so 'b' is evicted.",
+   "commonTrap": "Forgetting to refresh recency on get(), which evicts 'a' instead.",
+   "monoChoices": true
+  },
+  {
+   "id": "IV-PRC-003",
+   "revision": 1,
+   "subject": "interview",
+   "topic": "practical",
+   "difficulty": "hard",
+   "prompt": "What does this print?",
+   "code": "class TTLStore:\n    def __init__(self):\n        self.data = {}\n    def set(self, k, v, now, ttl=None):\n        self.data[k] = (v, None if ttl is None else now + ttl)\n    def get(self, k, now):\n        if k not in self.data:\n            return None\n        v, exp = self.data[k]\n        if exp is not None and now >= exp:\n            del self.data[k]\n            return None\n        return v\ns = TTLStore()\ns.set(\"x\", 1, now=0, ttl=10)\ns.set(\"y\", 2, now=5)\nprint(s.get(\"x\", now=9), s.get(\"x\", now=10), s.get(\"y\", now=1000))",
+   "choices": [
+    "1 None 2",
+    "1 1 2",
+    "1 None None",
+    "None None 2"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "Pass time in as a parameter and define the expiry boundary precisely: here, a key is dead at now >= expiry.",
+   "reasoning": "x expires at 10. At 9 it is alive; at exactly 10 it is expired and removed. y has no TTL, so it never expires.",
+   "commonTrap": "Calling time.time() inside the store, which makes tests flaky and boundary cases impossible to pin down.",
+   "monoChoices": true
+  },
+  {
+   "id": "IV-PRC-004",
+   "revision": 1,
+   "subject": "interview",
+   "topic": "practical",
+   "difficulty": "medium",
+   "prompt": "In a timed, multi-level coding assessment (each level adds features and unlocks only after the previous one passes), what usually separates candidates who finish from those who stall?",
+   "choices": [
+    "Choosing the most optimal algorithm from level 1",
+    "Getting each level passing quickly with simple, extensible state (plain dicts, small helper methods), so later features slot in without rewrites",
+    "Writing extensive docstrings before coding",
+    "Building a class hierarchy with abstract base classes up front"
+   ],
+   "correctIndex": 1,
+   "keyIdea": "These rounds reward implementation speed and code that extends cleanly, not clever algorithms.",
+   "reasoning": "Later levels typically add things like TTLs, history, or backup/restore to the same store. Simple data layouts and one place per operation make each extension a small diff.",
+   "commonTrap": "Over-engineering early, then running out of time on the last level.",
+   "monoChoices": false
+  },
+  {
+   "id": "IV-PRC-005",
+   "revision": 1,
+   "subject": "interview",
+   "topic": "practical",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "from collections import deque\nclass RateLimiter:\n    def __init__(self, limit, window):\n        self.limit, self.window, self.hits = limit, window, deque()\n    def allow(self, now):\n        while self.hits and self.hits[0] <= now - self.window:\n            self.hits.popleft()\n        if len(self.hits) < self.limit:\n            self.hits.append(now)\n            return True\n        return False\nr = RateLimiter(limit=2, window=10)\nprint([r.allow(t) for t in [0, 1, 2, 10, 11]])",
+   "choices": [
+    "[True, True, False, True, True]",
+    "[True, True, False, False, True]",
+    "[True, True, True, True, True]",
+    "[True, False, False, True, False]"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "A sliding-window limiter keeps recent timestamps in a deque and drops those that have fallen out of the window.",
+   "reasoning": "At t=2 there are already two hits, so it is refused. At t=10, the hit at 0 is out of the window (0 <= 10 - 10), so it is allowed. At t=11, the hit at 1 drops out, so it is allowed too.",
+   "commonTrap": "Off-by-one on the window edge (< vs <=). State the convention out loud in the interview.",
+   "monoChoices": true
+  },
+  {
+   "id": "IV-PRC-006",
+   "revision": 1,
+   "subject": "interview",
+   "topic": "practical",
+   "difficulty": "hard",
+   "prompt": "What does this print?",
+   "code": "from collections import deque\nlinks = {\"a\": [\"b\", \"c\"], \"b\": [\"a\", \"d\"], \"c\": [\"d\"], \"d\": [\"e\"], \"e\": []}\ndef crawl(start, max_depth):\n    seen, order = {start}, []\n    q = deque([(start, 0)])\n    while q:\n        url, d = q.popleft()\n        order.append(url)\n        if d == max_depth:\n            continue\n        for nxt in links[url]:\n            if nxt not in seen:\n                seen.add(nxt)\n                q.append((nxt, d + 1))\n    return order\nprint(crawl(\"a\", 2))",
+   "choices": [
+    "['a', 'b', 'c', 'd']",
+    "['a', 'b', 'c', 'd', 'e']",
+    "['a', 'b', 'd', 'c']",
+    "['a', 'b', 'c', 'd', 'd']"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "BFS crawl: mark a URL as seen when it is enqueued, and track depth alongside each URL.",
+   "reasoning": "a is at depth 0, b and c at depth 1, and d at depth 2. d is at max depth, so e is never enqueued. Marking on enqueue stops c from adding d a second time.",
+   "commonTrap": "Marking seen when dequeued, which enqueues duplicates on graphs with many paths to the same page.",
+   "monoChoices": true
+  },
+  {
+   "id": "IV-PRC-007",
+   "revision": 1,
+   "subject": "interview",
+   "topic": "practical",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "from concurrent.futures import ThreadPoolExecutor\nimport time\ndef fetch(n):\n    time.sleep(0.03 * (3 - n))\n    return n * 10\nwith ThreadPoolExecutor(max_workers=3) as ex:\n    print(list(ex.map(fetch, [0, 1, 2])))",
+   "choices": [
+    "[0, 10, 20]",
+    "[20, 10, 0]",
+    "[0, 20, 10]",
+    "It depends on scheduling"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "executor.map returns results in input order, even when tasks finish out of order.",
+   "reasoning": "Task 2 finishes first, but map yields results matching the input positions. Use `as_completed` on submitted futures if you want completion order.",
+   "commonTrap": "Assuming map yields results as they complete.",
+   "monoChoices": true
+  },
+  {
+   "id": "IV-PRC-008",
+   "revision": 1,
+   "subject": "interview",
+   "topic": "practical",
+   "difficulty": "hard",
+   "prompt": "You must fetch 10,000 URLs with asyncio, with at most 50 requests in flight at any moment. Which pattern does that?",
+   "choices": [
+    "sem = asyncio.Semaphore(50)\nasync def one(u):\n    async with sem:\n        return await fetch(u)\nawait asyncio.gather(*(one(u) for u in urls))",
+    "await asyncio.gather(*(fetch(u) for u in urls))",
+    "for u in urls:\n    await fetch(u)",
+    "with ThreadPoolExecutor(50) as ex:\n    ex.map(fetch, urls)"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "A semaphore bounds concurrency: every task is created, but only 50 hold the semaphore at once.",
+   "reasoning": "Option B opens 10,000 connections at once. Option C is sequential. Option D calls an async function from threads without an event loop, so it only creates coroutine objects.",
+   "commonTrap": "Unbounded gather, which works in testing and then exhausts sockets or gets rate-limited in production.",
+   "monoChoices": true
+  },
+  {
+   "id": "IV-PRC-009",
+   "revision": 1,
+   "subject": "interview",
+   "topic": "practical",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "import threading\ncount = 0\nlock = threading.Lock()\ndef work():\n    global count\n    for _ in range(100000):\n        with lock:\n            count += 1\nts = [threading.Thread(target=work) for _ in range(4)]\nfor t in ts: t.start()\nfor t in ts: t.join()\nprint(count)",
+   "choices": [
+    "400000",
+    "100000",
+    "A number below 400000 that varies",
+    "RuntimeError"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "`count += 1` is a read-modify-write; a lock makes it atomic across threads.",
+   "reasoning": "Each of 4 threads increments 100,000 times under the lock, so no updates are lost.",
+   "commonTrap": "Believing the GIL makes `+=` atomic. Without the lock, updates can be lost.",
+   "monoChoices": true
+  },
+  {
+   "id": "IV-PRC-010",
+   "revision": 1,
+   "subject": "interview",
+   "topic": "practical",
+   "difficulty": "medium",
+   "prompt": "You must serialise a dict[str, str] into one string so that ANY keys and values, including ':' ';' and newlines, round-trip exactly. Which design is correct?",
+   "choices": [
+    "\";\".join(f\"{k}:{v}\" for k, v in d.items())",
+    "Length-prefix every key and value, e.g. 3:abc5:hello, so the parser reads exact character counts",
+    "repr(d), then eval() to load it",
+    "Join with a rare separator such as '|||' and split on it"
+   ],
+   "correctIndex": 1,
+   "keyIdea": "Delimiters break when the data can contain them; length-prefixing or escaping makes the encoding unambiguous.",
+   "reasoning": "With a length prefix, the parser never searches for a delimiter inside the payload. `json.dumps` also works. eval executes arbitrary code, and 'rare' separators still collide eventually.",
+   "commonTrap": "Delimiter-joined formats that pass the simple tests and fail the hidden edge-case tests.",
+   "monoChoices": false
+  },
+  {
+   "id": "IV-PRC-011",
+   "revision": 1,
+   "subject": "interview",
+   "topic": "practical",
+   "difficulty": "hard",
+   "prompt": "What does this print?",
+   "code": "def encode(d):\n    return \"\".join(f\"{len(k)}:{k}{len(v)}:{v}\" for k, v in d.items())\ndef decode(s):\n    out, i = {}, 0\n    def read():\n        nonlocal i\n        j = s.index(\":\", i)\n        n = int(s[i:j])\n        val = s[j + 1:j + 1 + n]\n        i = j + 1 + n\n        return val\n    while i < len(s):\n        k = read()\n        out[k] = read()\n    return out\ns = encode({\"a:b\": \"x;y\", \"\": \"1\"})\nprint(s, decode(s) == {\"a:b\": \"x;y\", \"\": \"1\"})",
+   "choices": [
+    "3:a:b3:x;y0:1:1 True",
+    "3:a:b3:x;y0:1:1 False",
+    "a:b:x;y;:1 True",
+    "ValueError"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "A length-prefixed codec handles empty strings and embedded delimiters.",
+   "reasoning": "Each field is written as <len>:<text>. The decoder finds the first ':' after the current position, reads the length, then slices exactly that many characters, so the ':' inside 'a:b' is never misread.",
+   "commonTrap": "Forgetting the empty-string key or value, a classic hidden test case.",
+   "monoChoices": true
+  },
+  {
+   "id": "IV-PRC-012",
+   "revision": 1,
+   "subject": "interview",
+   "topic": "practical",
+   "difficulty": "easy",
+   "prompt": "Your expiry logic calls `time.time()` internally and the tests are flaky. What is the cleanest fix?",
+   "choices": [
+    "Add time.sleep() calls to the tests",
+    "Inject time: accept a `now` argument (or a clock function) so tests pass exact timestamps",
+    "Round timestamps to whole seconds",
+    "Retry flaky tests three times"
+   ],
+   "correctIndex": 1,
+   "keyIdea": "Dependency injection of time (and randomness) makes behaviour deterministic and testable.",
+   "reasoning": "When tests control `now`, boundary cases such as 'exactly at expiry' become precise. Assessment specs often pass timestamps explicitly for this reason.",
+   "commonTrap": "Patching around nondeterminism instead of removing it.",
+   "monoChoices": false
+  },
+  {
+   "id": "IV-PRC-013",
+   "revision": 1,
+   "subject": "interview",
+   "topic": "practical",
+   "difficulty": "medium",
+   "prompt": "This function should return the 2 most frequent words. What does it print?",
+   "code": "def top_k_words(text, k):\n    counts = {}\n    for w in text.lower().split():\n        counts[w] = counts.get(w, 0) + 1\n    return sorted(counts, key=counts.get)[:k]\nprint(top_k_words(\"b a b c b a\", 2))",
+   "choices": [
+    "['c', 'a']",
+    "['b', 'a']",
+    "['a', 'b']",
+    "['b', 'c']"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "Read the code you wrote against the spec: sorted() is ascending unless you ask otherwise.",
+   "reasoning": "Counts are b 3, a 2, c 1. Ascending order puts c, a, b, so the slice returns the two *least* frequent. Fix it with `reverse=True` or `Counter(...).most_common(k)`.",
+   "commonTrap": "Trusting a quick mental run. Always test the top and bottom of an ordering.",
+   "monoChoices": true
+  },
+  {
+   "id": "IV-PRC-014",
+   "revision": 1,
+   "subject": "interview",
+   "topic": "practical",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "def merge(iv):\n    out = []\n    for s, e in sorted(iv):\n        if out and s <= out[-1][1]:\n            out[-1][1] = max(out[-1][1], e)\n        else:\n            out.append([s, e])\n    return out\nprint(merge([(5, 8), (1, 3), (2, 4), (8, 9)]))",
+   "choices": [
+    "[[1, 4], [5, 9]]",
+    "[[1, 4], [5, 8], [8, 9]]",
+    "[[1, 9]]",
+    "[[1, 3], [2, 4], [5, 9]]"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "Merge intervals: sort by start, then extend the last interval while the next one overlaps it.",
+   "reasoning": "(1,3) and (2,4) merge to [1,4]. (5,8) and (8,9) touch at 8, and `<=` treats touching as overlapping, giving [5,9].",
+   "commonTrap": "Forgetting max(), which shrinks an interval when a contained one comes next, e.g. (1,10) then (2,3).",
+   "monoChoices": true
+  },
+  {
+   "id": "IV-PRC-015",
+   "revision": 1,
+   "subject": "interview",
+   "topic": "practical",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "import heapq\nq = []\nfor seq, (t, name) in enumerate([(5, \"c\"), (1, \"a\"), (5, \"b\"), (3, \"d\")]):\n    heapq.heappush(q, (t, seq, name))\nprint([heapq.heappop(q)[2] for _ in range(len(q))])",
+   "choices": [
+    "['a', 'd', 'c', 'b']",
+    "['a', 'd', 'b', 'c']",
+    "['c', 'a', 'b', 'd']",
+    "TypeError"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "A task scheduler is a heap of (time, sequence, task); the sequence number breaks ties in FIFO order.",
+   "reasoning": "Tasks pop by time first. c and b both have time 5, so the smaller sequence (c, pushed first) wins. The tie-breaker also means Python never compares payloads such as dicts, which would raise TypeError.",
+   "commonTrap": "Pushing (time, task) and crashing when two tasks share a time and the tasks are not comparable.",
+   "monoChoices": true
+  },
+  {
+   "id": "IV-DSA-001",
+   "revision": 1,
+   "subject": "interview",
+   "topic": "dsa",
+   "difficulty": "easy",
+   "prompt": "What does this print?",
+   "code": "def two_sum(nums, target):\n    seen = {}\n    for i, x in enumerate(nums):\n        if target - x in seen:\n            return [seen[target - x], i]\n        seen[x] = i\nprint(two_sum([3, 2, 4], 6))",
+   "choices": [
+    "[1, 2]",
+    "[0, 0]",
+    "[0, 2]",
+    "None"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "One-pass hash map: check for the complement before storing the current value.",
+   "reasoning": "At index 2 (value 4), the complement 2 is already stored at index 1. Checking before inserting stops 3 from pairing with itself.",
+   "commonTrap": "Inserting first, which pairs an element with itself (3 + 3 = 6 gives [0, 0]).",
+   "monoChoices": true
+  },
+  {
+   "id": "IV-DSA-002",
+   "revision": 1,
+   "subject": "interview",
+   "topic": "dsa",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "def longest(s):\n    last, start, best = {}, 0, 0\n    for i, ch in enumerate(s):\n        if ch in last and last[ch] >= start:\n            start = last[ch] + 1\n        last[ch] = i\n        best = max(best, i - start + 1)\n    return best\nprint(longest(\"abcabcbb\"), longest(\"pwwkew\"), longest(\"abba\"))",
+   "choices": [
+    "3 3 2",
+    "3 4 2",
+    "3 3 3",
+    "3 3 4"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "Sliding window: move the left edge past the previous occurrence, but never backwards.",
+   "reasoning": "The `last[ch] >= start` guard matters for 'abba'. When the second 'a' arrives, its earlier index 0 is already left of start (2), so start must not jump back.",
+   "commonTrap": "Dropping that guard, which returns 3 for 'abba'.",
+   "monoChoices": true
+  },
+  {
+   "id": "IV-DSA-003",
+   "revision": 1,
+   "subject": "interview",
+   "topic": "dsa",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "def first_ge(a, x):\n    lo, hi = 0, len(a)\n    while lo < hi:\n        mid = (lo + hi) // 2\n        if a[mid] < x:\n            lo = mid + 1\n        else:\n            hi = mid\n    return lo\nprint(first_ge([1, 3, 3, 5], 3), first_ge([1, 3, 3, 5], 6))",
+   "choices": [
+    "1 4",
+    "2 4",
+    "1 3",
+    "1 -1"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "Half-open binary search [lo, hi) returns the first index whose value is >= x, or len(a) if there is none.",
+   "reasoning": "The first 3 is at index 1. Nothing is >= 6, so it returns 4. This template also powers 'binary search on the answer' problems.",
+   "commonTrap": "Mixing inclusive and exclusive bounds, which causes infinite loops or off-by-one errors.",
+   "monoChoices": true
+  },
+  {
+   "id": "IV-DSA-004",
+   "revision": 1,
+   "subject": "interview",
+   "topic": "dsa",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "from collections import deque\ngrid = [\"..#\",\n        \".#.\",\n        \"...\"]\ndef shortest(grid):\n    R, C = len(grid), len(grid[0])\n    q, dist = deque([(0, 0)]), {(0, 0): 0}\n    while q:\n        r, c = q.popleft()\n        for dr, dc in ((1, 0), (-1, 0), (0, 1), (0, -1)):\n            nr, nc = r + dr, c + dc\n            if 0 <= nr < R and 0 <= nc < C and grid[nr][nc] == \".\" and (nr, nc) not in dist:\n                dist[(nr, nc)] = dist[(r, c)] + 1\n                q.append((nr, nc))\n    return dist.get((R - 1, C - 1), -1)\nprint(shortest(grid))",
+   "choices": [
+    "4",
+    "3",
+    "6",
+    "-1"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "BFS gives shortest paths on unweighted grids; the dist dict doubles as the visited set.",
+   "reasoning": "The route is down, down, right, right: 4 steps. The walls at (0,2) and (1,1) block the shorter-looking paths.",
+   "commonTrap": "Using DFS, which finds *a* path but not necessarily the shortest.",
+   "monoChoices": true
+  },
+  {
+   "id": "IV-DSA-005",
+   "revision": 1,
+   "subject": "interview",
+   "topic": "dsa",
+   "difficulty": "medium",
+   "prompt": "A stream has 10^9 numbers and you must keep the k = 100 largest. What is the best approach?",
+   "choices": [
+    "Store everything and sort: O(n log n) time, O(n) memory",
+    "A min-heap of size k: push each number and pop when size exceeds k. O(n log k) time, O(k) memory",
+    "A max-heap of all numbers",
+    "Sorted insertion into a Python list for each number"
+   ],
+   "correctIndex": 1,
+   "keyIdea": "To find the top-k largest, keep a min-heap of size k: its root is the smallest of the current top-k, so it is cheap to evict.",
+   "reasoning": "Each item costs O(log k), and memory stays at k items. `heapq.nlargest` does this internally.",
+   "commonTrap": "Reaching for a max-heap when the question says 'k largest'.",
+   "monoChoices": false
+  },
+  {
+   "id": "IV-DSA-006",
+   "revision": 1,
+   "subject": "interview",
+   "topic": "dsa",
+   "difficulty": "hard",
+   "prompt": "What does this print?",
+   "code": "parent = list(range(5))\ndef find(x):\n    while parent[x] != x:\n        parent[x] = parent[parent[x]]\n        x = parent[x]\n    return x\ndef union(a, b):\n    parent[find(a)] = find(b)\nfor a, b in [(0, 1), (1, 2), (3, 4)]:\n    union(a, b)\nprint(len({find(i) for i in range(5)}), find(0) == find(2))",
+   "choices": [
+    "2 True",
+    "3 True",
+    "2 False",
+    "5 False"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "Union-find answers 'are these connected?' and counts components in near-constant amortised time.",
+   "reasoning": "{0, 1, 2} and {3, 4} form two components, and 0 and 2 share a root. The `parent[x] = parent[parent[x]]` line is path halving.",
+   "commonTrap": "Setting `parent[a] = b` instead of linking the roots, which corrupts the trees.",
+   "monoChoices": true
+  },
+  {
+   "id": "IV-DSA-007",
+   "revision": 1,
+   "subject": "interview",
+   "topic": "dsa",
+   "difficulty": "hard",
+   "prompt": "What does this print?",
+   "code": "from collections import deque\ndeps = {\"train\": [\"data\", \"model\"], \"model\": [\"config\"], \"data\": [\"config\"], \"config\": []}\nindeg = {k: len(v) for k, v in deps.items()}\nusers = {k: [] for k in deps}\nfor k, vs in deps.items():\n    for v in vs:\n        users[v].append(k)\nq = deque(k for k, d in indeg.items() if d == 0)\norder = []\nwhile q:\n    n = q.popleft()\n    order.append(n)\n    for u in users[n]:\n        indeg[u] -= 1\n        if indeg[u] == 0:\n            q.append(u)\nprint(order)",
+   "choices": [
+    "['config', 'model', 'data', 'train']",
+    "['train', 'model', 'data', 'config']",
+    "['config', 'data', 'model', 'train']",
+    "['config', 'train']"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "Kahn's algorithm: repeatedly take nodes with no unmet dependencies. If fewer nodes come out than went in, there is a cycle.",
+   "reasoning": "config has no dependencies. Finishing it frees model and data, in the order they appear in users['config']. Once both are done, train is freed.",
+   "commonTrap": "Reversing the edge direction, which produces the order backwards.",
+   "monoChoices": true
+  },
+  {
+   "id": "IV-DSA-008",
+   "revision": 1,
+   "subject": "interview",
+   "topic": "dsa",
+   "difficulty": "easy",
+   "prompt": "What does this print?",
+   "code": "from itertools import accumulate\na = [2, 4, 1, 3]\np = [0, *accumulate(a)]\nprint(p, p[3] - p[1])",
+   "choices": [
+    "[0, 2, 6, 7, 10] 5",
+    "[2, 6, 7, 10] 5",
+    "[0, 2, 6, 7, 10] 4",
+    "[0, 2, 6, 7, 10] 7"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "With a leading-zero prefix array, sum(a[i:j]) == p[j] - p[i].",
+   "reasoning": "p[3] - p[1] = 7 - 2 = 5 = a[1] + a[2] = 4 + 1. Any range sum is answered in O(1) after O(n) setup.",
+   "commonTrap": "Omitting the leading 0, which leads to off-by-one range sums.",
+   "monoChoices": true
+  },
+  {
+   "id": "IV-DSA-009",
+   "revision": 1,
+   "subject": "interview",
+   "topic": "dsa",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "from functools import lru_cache\ncoins = (1, 2, 5)\n@lru_cache(maxsize=None)\ndef ways(amount, i=0):\n    if amount == 0:\n        return 1\n    if amount < 0 or i == len(coins):\n        return 0\n    return ways(amount - coins[i], i) + ways(amount, i + 1)\nprint(ways(5))",
+   "choices": [
+    "4",
+    "9",
+    "3",
+    "5"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "Indexing by coin position counts combinations, not orderings.",
+   "reasoning": "The ways are 5, 2+2+1, 2+1+1+1 and 1×5. The state (amount, i) means 'use coins from i onward', so each multiset is counted once.",
+   "commonTrap": "Recursing over all coins at every step, which counts ordered sequences (9 here).",
+   "monoChoices": true
+  },
+  {
+   "id": "IV-DSA-010",
+   "revision": 1,
+   "subject": "interview",
+   "topic": "dsa",
+   "difficulty": "medium",
+   "prompt": "You run a recursive DFS over a graph that is a single chain of 100,000 nodes. What happens in CPython?",
+   "choices": [
+    "It works; Python optimises tail calls",
+    "RecursionError: the default recursion limit is about 1000 frames; use an explicit stack",
+    "It silently returns partial results",
+    "It is fine as long as you use lru_cache"
+   ],
+   "correctIndex": 1,
+   "keyIdea": "Python has no tail-call optimisation and a modest recursion limit.",
+   "reasoning": "Convert the DFS to iterative form with a list as a stack. Raising sys.setrecursionlimit can crash the interpreter on very deep recursion.",
+   "commonTrap": "Writing recursive DFS for large inputs in an interview and hitting this on the hidden tests.",
+   "monoChoices": false
+  },
+  {
+   "id": "IV-DSA-011",
+   "revision": 1,
+   "subject": "interview",
+   "topic": "dsa",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "def next_greater(a):\n    res, st = [-1] * len(a), []\n    for i, x in enumerate(a):\n        while st and a[st[-1]] < x:\n            res[st.pop()] = x\n        st.append(i)\n    return res\nprint(next_greater([2, 1, 3, 2, 4]))",
+   "choices": [
+    "[3, 3, 4, 4, -1]",
+    "[3, 3, 4, 4, 4]",
+    "[-1, 3, 4, 4, -1]",
+    "[1, 3, 2, 4, -1]"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "A monotonic stack holds indices still waiting for a greater element. Each index is pushed and popped once, so it is O(n).",
+   "reasoning": "When 3 arrives it resolves both 1 and 2. When 4 arrives it resolves 2 and 3. Nothing is greater than the final 4.",
+   "commonTrap": "Writing the O(n²) nested-loop version when the follow-up asks for linear time.",
+   "monoChoices": true
+  },
+  {
+   "id": "IV-DSA-012",
+   "revision": 1,
+   "subject": "interview",
+   "topic": "dsa",
+   "difficulty": "easy",
+   "prompt": "What does this print?",
+   "code": "from collections import defaultdict\ng = defaultdict(list)\nfor w in [\"eat\", \"tea\", \"tan\", \"ate\", \"nat\"]:\n    g[\"\".join(sorted(w))].append(w)\nprint(list(g.values()))",
+   "choices": [
+    "[['eat', 'tea', 'ate'], ['tan', 'nat']]",
+    "[['eat', 'tea', 'tan', 'ate', 'nat']]",
+    "[['aet'], ['ant']]",
+    "[['ate', 'eat', 'tea'], ['nat', 'tan']]"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "Group by a canonical key: sorted letters identify an anagram class.",
+   "reasoning": "'eat', 'tea' and 'ate' all sort to 'aet'. Insertion order is preserved within each group.",
+   "commonTrap": "Using sorted(w) (a list) as the key, which is unhashable. Join it into a string or use a tuple.",
+   "monoChoices": true
+  },
+  {
+   "id": "IV-NUM-001",
+   "revision": 1,
+   "subject": "interview",
+   "topic": "numerics",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "import math\nxs = [1000.0, 1001.0]\ntry:\n    e = [math.exp(x) for x in xs]\n    print([v / sum(e) for v in e])\nexcept OverflowError:\n    print(\"OverflowError\")",
+   "choices": [
+    "OverflowError",
+    "[0.269, 0.731]",
+    "[0.5, 0.5]",
+    "[nan, nan]"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "Naive softmax overflows: exp(1000) exceeds the float range.",
+   "reasoning": "math.exp raises OverflowError here. NumPy or PyTorch would return inf and then nan. The fix is to subtract the max logit first.",
+   "commonTrap": "Assuming large logits are harmless. They are routine in un-normalised model outputs.",
+   "monoChoices": true
+  },
+  {
+   "id": "IV-NUM-002",
+   "revision": 1,
+   "subject": "interview",
+   "topic": "numerics",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "import math\ndef softmax(xs):\n    m = max(xs)\n    e = [math.exp(x - m) for x in xs]\n    s = sum(e)\n    return [round(v / s, 3) for v in e]\nprint(softmax([1000.0, 1001.0]))",
+   "choices": [
+    "[0.269, 0.731]",
+    "[0.5, 0.5]",
+    "[0.0, 1.0]",
+    "OverflowError"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "softmax(x) == softmax(x - c) for any constant c; choosing c = max(x) keeps exp() in range.",
+   "reasoning": "After shifting, the inputs are -1 and 0, giving e^-1 / (e^-1 + 1) ≈ 0.269. Only the *differences* between logits matter.",
+   "commonTrap": "Thinking the shift changes the result. It cancels in the ratio.",
+   "monoChoices": true
+  },
+  {
+   "id": "IV-NUM-003",
+   "revision": 1,
+   "subject": "interview",
+   "topic": "numerics",
+   "difficulty": "hard",
+   "prompt": "What does this print?",
+   "code": "import math\ndef logsumexp(xs):\n    m = max(xs)\n    return m + math.log(sum(math.exp(x - m) for x in xs))\nprint(round(logsumexp([-1000.0, -1000.0]), 4))",
+   "choices": [
+    "-999.3069",
+    "-inf",
+    "ValueError",
+    "-1000.0"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "log-sum-exp with the max trick stays finite in both directions; cross-entropy is built on it.",
+   "reasoning": "The result is -1000 + log(2) ≈ -999.3069. The naive version computes exp(-1000) = 0.0, then log(0), which raises ValueError in math and gives -inf in NumPy.",
+   "commonTrap": "Computing log(softmax(x)) in two steps instead of using log_softmax or logsumexp.",
+   "monoChoices": true
+  },
+  {
+   "id": "IV-NUM-004",
+   "revision": 1,
+   "subject": "interview",
+   "topic": "numerics",
+   "difficulty": "easy",
+   "prompt": "What does this print?",
+   "code": "import math\nprobs = [0.7, 0.2, 0.1]\ntarget = 1\nprint(round(-math.log(probs[target]), 3))",
+   "choices": [
+    "1.609",
+    "0.357",
+    "0.2",
+    "2.303"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "Cross-entropy for one example is -log(probability assigned to the true class).",
+   "reasoning": "-ln(0.2) ≈ 1.609. Only the true class's probability enters the loss directly; the others matter through normalisation.",
+   "commonTrap": "Using the predicted class (0.7, giving 0.357) instead of the target class.",
+   "monoChoices": true
+  },
+  {
+   "id": "IV-NUM-005",
+   "revision": 1,
+   "subject": "interview",
+   "topic": "numerics",
+   "difficulty": "medium",
+   "prompt": "Why does fp16 training typically need loss scaling, while bf16 usually does not?",
+   "choices": [
+    "bf16 has more mantissa bits than fp16",
+    "fp16's narrow exponent range lets small gradients underflow to zero (and large values overflow past ~65504); bf16 keeps fp32's 8-bit exponent range at lower precision",
+    "bf16 runs only on CPUs",
+    "Loss scaling is needed for both equally"
+   ],
+   "correctIndex": 1,
+   "keyIdea": "Range versus precision: fp16 has 5 exponent bits and 10 mantissa bits; bf16 has 8 exponent bits and 7 mantissa bits.",
+   "reasoning": "Loss scaling multiplies the loss so gradients stay representable in fp16, then unscales before the optimizer step. bf16's range matches fp32's, so underflow is rare.",
+   "commonTrap": "Thinking bf16 is 'more precise'. It is less precise but has far more range.",
+   "monoChoices": false
+  },
+  {
+   "id": "IV-NUM-006",
+   "revision": 1,
+   "subject": "interview",
+   "topic": "numerics",
+   "difficulty": "hard",
+   "prompt": "What does this print?",
+   "code": "import struct\nf32 = lambda x: struct.unpack(\"f\", struct.pack(\"f\", x))[0]\nprint(f32(f32(16777216.0) + 1.0))",
+   "choices": [
+    "16777216.0",
+    "16777217.0",
+    "16777218.0",
+    "inf"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "float32 has a 24-bit significand: above 2^24, consecutive integers cannot all be represented.",
+   "reasoning": "16777217 lies exactly halfway between two representable values and rounds to even, 16777216. This is why fp32 counters and accumulators lose small increments.",
+   "commonTrap": "Accumulating many small values into a large float32 sum and silently losing them.",
+   "monoChoices": true
+  },
+  {
+   "id": "IV-NUM-007",
+   "revision": 1,
+   "subject": "interview",
+   "topic": "numerics",
+   "difficulty": "hard",
+   "prompt": "What does this print?",
+   "code": "xs = [1e16, 1.0, -1e16]\ntotal = 0.0\nfor x in xs:\n    total += x\nprint(total, sum(xs))",
+   "choices": [
+    "0.0 1.0",
+    "1.0 1.0",
+    "0.0 0.0",
+    "1.0 0.0"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "Floating-point addition is not associative: a naive running sum loses small terms next to large ones.",
+   "reasoning": "1e16 + 1.0 rounds back to 1e16 (the spacing between floats there is 2), so the loop loses the 1. Since Python 3.12, built-in sum() uses compensated summation and recovers it (math.fsum is exact). GPU reductions do not, which is one reason results differ slightly across runs and hardware.",
+   "commonTrap": "Assuming sum() and a hand-written loop agree. Before Python 3.12 both gave 0.0.",
+   "monoChoices": true
+  },
+  {
+   "id": "IV-NUM-008",
+   "revision": 1,
+   "subject": "interview",
+   "topic": "numerics",
+   "difficulty": "easy",
+   "prompt": "x has shape (32, 128, 64) and b has shape (64,). What is the shape of x + b?",
+   "choices": [
+    "(32, 128, 64)",
+    "(64, 32, 128)",
+    "Error: shapes do not match",
+    "(32, 128, 64, 64)"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "Broadcasting aligns shapes from the right; a missing or size-1 dimension stretches.",
+   "reasoning": "(64,) lines up with the last axis, so b is added to every (batch, position) vector. This is exactly how a bias is added.",
+   "commonTrap": "Aligning shapes from the left.",
+   "monoChoices": false
+  },
+  {
+   "id": "IV-NUM-009",
+   "revision": 1,
+   "subject": "interview",
+   "topic": "numerics",
+   "difficulty": "medium",
+   "prompt": "Q and K both have shape (B, H, T, d). What is the shape of Q @ K.transpose(-2, -1)?",
+   "choices": [
+    "(B, H, T, T)",
+    "(B, H, d, d)",
+    "(B, T, T)",
+    "(B, H, T, d)"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "Batched matmul treats leading dimensions as batch: (T, d) @ (d, T) gives (T, T).",
+   "reasoning": "That is one attention score per (query, key) pair, per head, per batch element. This T × T matrix is why naive attention memory grows quadratically with sequence length.",
+   "commonTrap": "Transposing the wrong pair of dimensions and getting (d, d).",
+   "monoChoices": false
+  },
+  {
+   "id": "IV-NUM-010",
+   "revision": 1,
+   "subject": "interview",
+   "topic": "numerics",
+   "difficulty": "medium",
+   "prompt": "Which shape can be broadcast-added to an array of shape (3, 4)?",
+   "choices": [
+    "(3,)",
+    "(4,)",
+    "(4, 3)",
+    "(2, 4)"
+   ],
+   "correctIndex": 1,
+   "keyIdea": "Trailing dimensions must be equal or 1.",
+   "reasoning": "(4,) aligns with the last axis. To add a per-row value of shape (3,), reshape it to (3, 1) first.",
+   "commonTrap": "Expecting (3,) to align with the first axis. It aligns with the last axis and fails.",
+   "monoChoices": false
+  },
+  {
+   "id": "IV-LLM-001",
+   "revision": 1,
+   "subject": "interview",
+   "topic": "llm",
+   "difficulty": "medium",
+   "prompt": "For naive self-attention over a sequence of length T with model width d, how do compute and score memory scale?",
+   "choices": [
+    "Compute O(T·d²), memory O(T)",
+    "Compute O(T²·d), memory O(T²) for the score matrix per head",
+    "Compute O(T log T), memory O(T)",
+    "Compute O(d³), memory O(d²)"
+   ],
+   "correctIndex": 1,
+   "keyIdea": "Every token attends to every token: there are T² scores, each a d-dimensional dot product.",
+   "reasoning": "Doubling the context quadruples attention cost. FlashAttention avoids storing the T × T matrix but still does O(T²) work.",
+   "commonTrap": "Confusing attention's T² term with the MLP's T·d² term. Which one dominates depends on T relative to d.",
+   "monoChoices": false
+  },
+  {
+   "id": "IV-LLM-002",
+   "revision": 1,
+   "subject": "interview",
+   "topic": "llm",
+   "difficulty": "hard",
+   "prompt": "A model has 32 layers, 8 key/value heads (grouped-query attention), head dimension 128, and stores its KV cache in fp16. How much KV cache does one 4096-token sequence need?",
+   "choices": [
+    "512 MiB",
+    "256 MiB",
+    "1024 MiB",
+    "128 MiB"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "KV bytes = 2 (K and V) × layers × kv_heads × head_dim × bytes per value × tokens.",
+   "reasoning": "2 × 32 × 8 × 128 × 2 bytes = 128 KiB per token, × 4096 tokens = 512 MiB. Multiply by the batch size: KV cache, not weights, often limits serving throughput.",
+   "commonTrap": "Forgetting the factor of 2 for K and V, or using the query-head count when the model uses grouped-query attention.",
+   "monoChoices": false
+  },
+  {
+   "id": "IV-LLM-003",
+   "revision": 1,
+   "subject": "interview",
+   "topic": "llm",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "T = 4\nmask = [[1 if j <= i else 0 for j in range(T)] for i in range(T)]\nprint(sum(map(sum, mask)), mask[1])",
+   "choices": [
+    "10 [1, 1, 0, 0]",
+    "16 [1, 1, 1, 1]",
+    "6 [0, 1, 0, 0]",
+    "10 [0, 0, 1, 1]"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "A causal mask is lower-triangular: position i may attend only to positions j <= i.",
+   "reasoning": "There are T(T + 1)/2 = 10 allowed pairs. Row 1 can see positions 0 and 1. In practice, masked scores are set to -inf before the softmax.",
+   "commonTrap": "Using an upper-triangular mask, which lets tokens attend to the future and leaks the labels.",
+   "monoChoices": true
+  },
+  {
+   "id": "IV-LLM-004",
+   "revision": 1,
+   "subject": "interview",
+   "topic": "llm",
+   "difficulty": "medium",
+   "prompt": "Why are attention scores divided by sqrt(d_k)?",
+   "choices": [
+    "To make attention faster",
+    "With unit-variance q and k, the dot product has variance d_k; scaling restores unit variance so the softmax does not saturate and gradients do not vanish",
+    "To normalise the output to sum to 1",
+    "It is required for the causal mask to work"
+   ],
+   "correctIndex": 1,
+   "keyIdea": "Scaling keeps the logits' variance near 1, independent of head size.",
+   "reasoning": "Unscaled, large d_k makes the logits large, so the softmax becomes nearly one-hot and its gradient approaches zero.",
+   "commonTrap": "Confusing it with the softmax normalisation itself.",
+   "monoChoices": false
+  },
+  {
+   "id": "IV-LLM-005",
+   "revision": 1,
+   "subject": "interview",
+   "topic": "llm",
+   "difficulty": "hard",
+   "prompt": "Ignoring biases, norms and embeddings, roughly how many parameters are in one standard transformer block with d_model = 4096 and an MLP hidden size of 4·d_model?",
+   "choices": [
+    "≈201M",
+    "≈67M",
+    "≈134M",
+    "≈805M"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "Per block: attention has 4d² (Q, K, V, O) and the MLP has 8d² (d→4d→d), so 12d² in total.",
+   "reasoning": "12 × 4096² ≈ 201M. A 32-layer model is then about 6.4B parameters before embeddings, which is roughly LLaMA-7B's scale.",
+   "commonTrap": "Counting the MLP as 4d² (one matrix) instead of 8d² (two matrices).",
+   "monoChoices": false
+  },
+  {
+   "id": "IV-LLM-006",
+   "revision": 1,
+   "subject": "interview",
+   "topic": "llm",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "import math\ndef probs(logits, T):\n    e = [math.exp(l / T) for l in logits]\n    s = sum(e)\n    return [round(v / s, 2) for v in e]\nprint(probs([2.0, 1.0], 1.0), probs([2.0, 1.0], 0.1))",
+   "choices": [
+    "[0.73, 0.27] [1.0, 0.0]",
+    "[0.73, 0.27] [0.5, 0.5]",
+    "[0.67, 0.33] [1.0, 0.0]",
+    "[0.73, 0.27] [0.73, 0.27]"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "Temperature divides the logits: T < 1 sharpens toward greedy decoding, T > 1 flattens toward uniform.",
+   "reasoning": "At T = 0.1, the logit gap of 1 becomes 10, and e^10 ≈ 22000, so nearly all the mass goes to the top token.",
+   "commonTrap": "Thinking temperature changes which token ranks first. It only changes how peaked the distribution is.",
+   "monoChoices": true
+  },
+  {
+   "id": "IV-LLM-007",
+   "revision": 1,
+   "subject": "interview",
+   "topic": "llm",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "probs = {\"the\": 0.5, \"a\": 0.3, \"an\": 0.15, \"zebra\": 0.05}\nkept, total = [], 0.0\nfor tok, p in sorted(probs.items(), key=lambda kv: -kv[1]):\n    kept.append(tok)\n    total += p\n    if total >= 0.9:\n        break\nprint(kept)",
+   "choices": [
+    "['the', 'a', 'an']",
+    "['the', 'a']",
+    "['the', 'a', 'an', 'zebra']",
+    "['the']"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "Top-p (nucleus) sampling keeps the smallest high-probability set whose mass reaches p, then renormalises.",
+   "reasoning": "The cumulative mass goes 0.5, 0.8, then 0.95 ≥ 0.9, so three tokens are kept. Unlike top-k, the set size adapts to how confident the model is.",
+   "commonTrap": "Stopping just before crossing p, which keeps too few tokens.",
+   "monoChoices": true
+  },
+  {
+   "id": "IV-LLM-008",
+   "revision": 1,
+   "subject": "interview",
+   "topic": "llm",
+   "difficulty": "hard",
+   "prompt": "What does this print?",
+   "code": "from collections import Counter\nwords = [list(\"low\"), list(\"lower\"), list(\"lowest\")]\npairs = Counter()\nfor w in words:\n    for a, b in zip(w, w[1:]):\n        pairs[a + b] += 1\nprint(pairs.most_common(2))",
+   "choices": [
+    "[('lo', 3), ('ow', 3)]",
+    "[('ow', 3), ('lo', 3)]",
+    "[('we', 2), ('lo', 3)]",
+    "[('lo', 3), ('we', 2)]"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "BPE training counts adjacent symbol pairs and repeatedly merges the most frequent one.",
+   "reasoning": "'lo' and 'ow' each appear in all three words. Counter breaks the tie by first occurrence. A real implementation weights each word by its corpus frequency, merges the pair everywhere, and repeats.",
+   "commonTrap": "Counting pairs across word boundaries. BPE merges within pre-tokenised words.",
+   "monoChoices": true
+  },
+  {
+   "id": "IV-LLM-009",
+   "revision": 1,
+   "subject": "interview",
+   "topic": "llm",
+   "difficulty": "medium",
+   "prompt": "During autoregressive decoding, what does the KV cache avoid recomputing, and what does it cost?",
+   "choices": [
+    "It caches output tokens; it costs nothing",
+    "It stores past keys and values so each step computes K and V only for the new token; memory grows linearly with sequence length and batch size",
+    "It caches the weights on the GPU; it costs disk space",
+    "It skips the attention computation entirely"
+   ],
+   "correctIndex": 1,
+   "keyIdea": "The KV cache trades memory for compute: without it, step t recomputes K and V for all t previous tokens.",
+   "reasoning": "With the cache, each new token's query attends to stored keys and values. That makes decoding memory-bandwidth bound and is why paged attention exists.",
+   "commonTrap": "Thinking the cache removes attention cost. The new token still attends to all cached positions.",
+   "monoChoices": false
+  },
+  {
+   "id": "IV-LLM-010",
+   "revision": 1,
+   "subject": "interview",
+   "topic": "llm",
+   "difficulty": "medium",
+   "prompt": "The profiler shows your GPU idle between steps while the CPU decodes and augments audio. What should you try first?",
+   "choices": [
+    "Use a larger model so the GPU has more work",
+    "Overlap loading with compute: DataLoader(num_workers>0, pin_memory=True, persistent_workers=True), prefetching, or moving heavy preprocessing offline",
+    "Lower the learning rate",
+    "Switch from fp16 to fp32"
+   ],
+   "correctIndex": 1,
+   "keyIdea": "An input pipeline that is the bottleneck shows up as low GPU utilisation with busy CPU workers.",
+   "reasoning": "Parallel workers and pinned memory keep batches ready. Precomputing features (for example, mel spectrograms) removes repeated CPU work.",
+   "commonTrap": "Tuning the model when the bottleneck is the data pipeline.",
+   "monoChoices": false
+  },
+  {
+   "id": "IV-LLM-011",
+   "revision": 1,
+   "subject": "interview",
+   "topic": "llm",
+   "difficulty": "medium",
+   "prompt": "You want an effective batch size of 256, but only 32 fits in GPU memory. What is the correct gradient accumulation setup?",
+   "choices": [
+    "8 micro-batches; call optimizer.step() after each one",
+    "8 micro-batches; divide each micro-batch loss by 8, call backward() each time, and step and zero the gradients once every 8",
+    "Use a learning rate 8× smaller and step every micro-batch",
+    "32 micro-batches of 8"
+   ],
+   "correctIndex": 1,
+   "keyIdea": "Gradients add up across backward() calls, so scale each loss by 1/steps to reproduce the mean over the large batch.",
+   "reasoning": "Without the division, the gradient is 8× too large, which acts like an 8× learning rate. BatchNorm statistics still see only 32 samples, a known caveat.",
+   "commonTrap": "Forgetting optimizer.zero_grad() placement, or stepping on every micro-batch.",
+   "monoChoices": false
+  },
+  {
+   "id": "IV-LLM-012",
+   "revision": 1,
+   "subject": "interview",
+   "topic": "llm",
+   "difficulty": "hard",
+   "prompt": "An fp16 training run suddenly goes to NaN loss at step 12k. Which first checks are most informative?",
+   "choices": [
+    "Restart with a different random seed and hope",
+    "Inspect the gradient norm and loss-scale history before the NaN, look for a learning-rate spike or bad batch, add gradient clipping, check activation maxima, and consider bf16",
+    "Increase the batch size",
+    "Remove the validation loop"
+   ],
+   "correctIndex": 1,
+   "keyIdea": "NaNs usually follow an overflow or instability that is visible in the metrics just before them.",
+   "reasoning": "Logging gradient norms and maximum activations localises the problem. Clipping and bf16 address common causes, and replaying the offending batch tests the bad-data hypothesis.",
+   "commonTrap": "Changing several things at once, so you never learn the actual cause.",
+   "monoChoices": false
+  },
+  {
+   "id": "IV-LLM-013",
+   "revision": 1,
+   "subject": "interview",
+   "topic": "llm",
+   "difficulty": "medium",
+   "prompt": "A freshly initialised language model with a 50,000-token vocabulary should start with a cross-entropy loss of about:",
+   "choices": [
+    "10.82",
+    "4.70",
+    "0.69",
+    "50000"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "At initialisation the predictions are roughly uniform, so the loss is about ln(vocab_size).",
+   "reasoning": "ln(50000) ≈ 10.82. A starting loss far from this suggests an initialisation, masking or label bug. It is a quick sanity check before any long run.",
+   "commonTrap": "Using log base 10 (4.70) instead of the natural log.",
+   "monoChoices": false
+  },
+  {
+   "id": "IV-LLM-014",
+   "revision": 1,
+   "subject": "interview",
+   "topic": "llm",
+   "difficulty": "easy",
+   "prompt": "A model's validation cross-entropy is 2.0 nats per token. What is its perplexity?",
+   "choices": [
+    "7.39",
+    "4.0",
+    "2.0",
+    "100"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "Perplexity = exp(cross-entropy in nats).",
+   "reasoning": "e^2 ≈ 7.39, roughly 'as uncertain as choosing among about 7 equally likely tokens'. If the loss is in bits, use 2^loss instead.",
+   "commonTrap": "Mixing up nats and bits, or comparing perplexities across different tokenizers.",
+   "monoChoices": false
+  }
+ ]
+}

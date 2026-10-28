@@ -231,14 +231,18 @@ select.search { appearance: auto; }
 <script>
 "use strict";
 /* ── Content manifest: add a bank here after running build.py ── */
-const BANKS = [{ id: "python", file: "banks/python.json" }];
-const LATER = ["NumPy", "PyTorch", "Classical ML", "Deep Learning", "DSA patterns"];
+/* weight = new questions taken from this bank per round of the Daily Sprint mix */
+const BANKS = [
+  { id: "python", file: "banks/python.json", weight: 2, note: "basics → advanced" },
+  { id: "interview", file: "banks/interview.json", weight: 1, note: "AI-lab interview style" },
+];
+const LATER = ["NumPy", "PyTorch", "Classical ML", "Deep Learning", "ML system design"];
 const DAILY_SIZE = 10, DAILY_GOAL = 10, REVIEW_SLOTS = 4;
 const LS_KEY = "dailydrill.v1";
 const DIFF_RANK = { easy: 0, medium: 1, hard: 2 };
 
 const S = {
-  qs: [], byId: new Map(), topics: [], order: [],
+  qs: [], byId: new Map(), topics: [], order: [], banks: [],
   progress: {}, activity: {}, session: null,
   view: "home", setup: null, lib: { q: "", filter: "all", topic: "" },
   confirmReset: false, backup: null,
@@ -351,7 +355,8 @@ async function loadBanks() {
     const res = await fetch(b.file);
     if (!res.ok) throw new Error(`Could not load ${b.file} (${res.status})`);
     const bank = await res.json();
-    bank.topics.forEach((t) => S.topics.push({ key: bank.id + "/" + t.id, title: t.title, bank: bank.title }));
+    S.banks.push({ id: bank.id, title: bank.title, note: b.note || "", weight: b.weight || 1 });
+    bank.topics.forEach((t) => S.topics.push({ key: bank.id + "/" + t.id, title: t.title, bank: bank.id }));
     bank.questions.forEach((q) => { q.topicKey = bank.id + "/" + q.topic; S.qs.push(q); S.byId.set(q.id, q); });
   }
   const tIndex = Object.fromEntries(S.topics.map((t, i) => [t.key, i]));
@@ -383,7 +388,11 @@ function dailyIds() {
   const today = dayKey();
   const review = S.qs.filter((q) => statusOf(q.id) === "review" && dayKey(S.progress[q.id].lastAt) !== today)
     .sort((a, b) => S.progress[a.id].lastAt - S.progress[b.id].lastAt).slice(0, REVIEW_SLOTS);
-  const fresh = S.order.filter((q) => statusOf(q.id) === "unseen").slice(0, DAILY_SIZE - review.length);
+  // New questions: walk each bank's curriculum in order, mixing banks by weight (e.g. 2 Python : 1 Interview).
+  const need = DAILY_SIZE - review.length, fresh = [];
+  const pools = S.banks.map((b) => ({ w: b.weight, qs: S.order.filter((q) => q.topicKey.startsWith(b.id + "/") && statusOf(q.id) === "unseen") }));
+  while (fresh.length < need && pools.some((p) => p.qs.length))
+    for (const p of pools) for (let k = 0; k < p.w && fresh.length < need && p.qs.length; k++) fresh.push(p.qs.shift());
   let extra = [];
   if (review.length + fresh.length < DAILY_SIZE) {
     const used = new Set([...review, ...fresh].map((q) => q.id));
@@ -467,7 +476,7 @@ function viewHome() {
   const reviewN = S.qs.filter((q) => statusOf(q.id) === "review").length;
   const bookN = S.qs.filter((q) => matchFilter(q, "bookmarked")).length;
   const sess = S.session && S.session.ids.length && S.view !== "results" && S.session.idx < S.session.ids.length ? S.session : null;
-  const topics = S.topics.map((t, i) => {
+  const topicRow = (t, i) => {
     const qs = S.qs.filter((q) => q.topicKey === t.key);
     const solved = qs.filter((q) => statusOf(q.id) === "solved").length;
     const rv = qs.filter((q) => statusOf(q.id) === "review").length;
@@ -475,9 +484,15 @@ function viewHome() {
       <span class="idx">${solved === qs.length ? "✓" : String(i + 1).padStart(2, "0")}</span>
       <span><h3>${esc(t.title)}</h3><div class="bar"><b style="width:${pct(solved, qs.length)}%"></b></div></span>
       <span class="meta">${solved}/${qs.length}${rv ? ` · <span style="color:var(--warn)">${rv} to review</span>` : ""}</span></button>`;
+  };
+  const paths = S.banks.map((b) => {
+    const ts = S.topics.filter((t) => t.bank === b.id);
+    const bq = S.qs.filter((q) => q.topicKey.startsWith(b.id + "/"));
+    const sv = bq.filter((q) => statusOf(q.id) === "solved").length;
+    return `<section class="card stack" style="gap:4px"><div class="row spread"><h2>${esc(b.title)}</h2><span class="muted" style="font-size:.8rem">${esc(b.note)} · ${sv}/${bq.length}</span></div><div class="path">${ts.map(topicRow).join("")}</div></section>`;
   }).join("");
   return `<div class="stack fade-in" style="gap:18px">
-    <header class="top"><div class="brand"><span class="eyebrow">Python interview prep</span><h1>Daily Drill</h1>${syncBadge()}</div></header>
+    <header class="top"><div class="brand"><span class="eyebrow">ML interview prep</span><h1>Daily Drill</h1>${syncBadge()}</div></header>
     <div class="card streak">
       <div class="flame">${st}<small>day streak</small></div>
       <div class="week" aria-label="Last 7 days">${days}</div>
@@ -498,7 +513,7 @@ function viewHome() {
       <button class="btn" data-act="bookmarks" ${bookN ? "" : "disabled"}>Bookmarks <span class="n">${bookN}</span></button>
       <button class="btn" data-act="random">Random 5 <span class="n">›</span></button>
     </div>
-    <section class="card stack" style="gap:4px"><div class="row spread"><h2>Python path</h2><span class="muted" style="font-size:.8rem">basics → advanced</span></div><div class="path">${topics}</div></section>
+    ${paths}
     <section class="stack"><span class="eyebrow">Later tracks</span><div class="later">${LATER.map((t) => `<span>${t}</span>`).join("")}</div></section>
   </div>`;
 }
@@ -637,7 +652,7 @@ function viewProgress() {
     <section class="card stack"><div class="row spread"><h2>Last 5 weeks</h2><span class="muted" style="font-size:.78rem">gold = goal of ${DAILY_GOAL} met</span></div><div class="heat">${cells.join("")}</div></section>
     <section class="card stack"><h2>Data &amp; privacy</h2>
       <p class="muted" style="margin:0;font-size:.9rem">No ads, analytics or tutor. Questions ship with the app. ${NATIVE ? "Progress is stored on this phone and works offline. Back it up before uninstalling the app." : sync === "synced" ? "Progress syncs to this artifact's private store, which only you (the owner) can read or write, so your phone and laptop stay in step." : "Progress is kept in this browser. Open the app while signed in to Claude as its owner to sync it across devices."}</p>
-      <p class="muted" style="margin:0;font-size:.85rem">Bank: ${total} Python questions; ${S.qs.filter((q) => q.monoChoices).length} code-output answers were verified by running them.</p>
+      <p class="muted" style="margin:0;font-size:.85rem">${S.banks.map((b) => `${esc(b.title)}: ${S.qs.filter((q) => q.topicKey.startsWith(b.id + "/")).length}`).join(" · ")} questions. Every code-output answer was verified by running it.</p>
       ${backupBlock()}
       ${resetBlock}</section>
   </div>`;
@@ -667,7 +682,7 @@ function importCode(text) {
 function startDaily() { const ids = dailyIds(); if (ids.length) newSession("daily", "Daily Sprint", ids); }
 function copyQuestion(q) {
   const order = S.session.orders[q.id] || [0, 1, 2, 3];
-  let txt = `Python interview practice question ${q.id} (${q.difficulty})\n\n${q.prompt}\n`;
+  let txt = `Interview practice question ${q.id} (${q.difficulty})\n\n${q.prompt}\n`;
   if (q.code) txt += "\n```python\n" + q.code + "\n```\n";
   txt += "\n" + order.map((o, i) => `${"ABCD"[i]}) ${q.choices[o]}`).join("\n");
   if (S.session.submitted) txt += `\n\nI picked: ${q.choices[S.session.picked]}\nCorrect: ${q.choices[q.correctIndex]}\nExplain the concept and how to reason about it.`;

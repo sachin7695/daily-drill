@@ -14,9 +14,10 @@ from pathlib import Path
 ROOT = Path(__file__).parent
 sys.path.insert(0, str(ROOT / "content"))
 
+import interview_bank  # noqa: E402
 import python_bank  # noqa: E402
 
-BANKS = [("python", "Python", python_bank)]
+BANKS = [("python", "Python", python_bank), ("interview", "Interview Track", interview_bank)]
 DIFFICULTIES = {"easy", "medium", "hard"}
 ID_RE = re.compile(r"^[A-Z]{2,4}-[A-Z]{3}-\d{3}$")
 REQUIRED = ["id", "revision", "topic", "difficulty", "prompt", "choices",
@@ -56,6 +57,12 @@ def check_bank(bank_id, module):
             errors.append(f"{qid}: need 4 distinct choices")
         if not 0 <= q["correctIndex"] < 4:
             errors.append(f"{qid}: correctIndex out of range")
+        if q.get("check"):
+            got = run_snippet(q["check"])
+            want = q["choices"][q["correctIndex"]].strip()
+            if got != want:
+                errors.append(f"{qid}: check printed {got!r}, marked answer is {want!r}")
+            verified += 1
         if q["verify"]:
             if not q.get("code"):
                 errors.append(f"{qid}: verify without code")
@@ -80,14 +87,14 @@ def main():
         for e in errors:
             print("ERROR", e)
         failed |= bool(errors)
-        qs = [{k: v for k, v in q.items() if k != "verify" and v is not None}
+        qs = [{k: v for k, v in q.items() if k not in ("verify", "check") and v is not None}
               for q in module.QUESTIONS]
         bank = {"id": bank_id, "title": title, "python": sys.version.split()[0],
                 "topics": [{"id": t, "title": n} for t, n in module.TOPICS],
                 "questions": qs}
         (out_dir / f"{bank_id}.json").write_text(json.dumps(bank, indent=1, ensure_ascii=False))
         by_diff = {d: sum(q["difficulty"] == d for q in qs) for d in ("easy", "medium", "hard")}
-        print(f"{bank_id}: {len(qs)} questions, {verified} snippets executed and matched, {by_diff}")
+        print(f"{bank_id}: {len(qs)} questions, {verified} answers executed and matched, {by_diff}")
     if not failed:
         write_www(out_dir)
     sys.exit(1 if failed else 0)
