@@ -1,0 +1,14 @@
+{
+  "appId": "io.github.sachin7695.dailydrill",
+  "appName": "Daily Drill",
+  "webDir": "www",
+  "android": {
+    "adjustMarginsForEdgeToEdge": "auto"
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 400,
+      "backgroundColor": "#101B2B"
+    }
+  }
+}

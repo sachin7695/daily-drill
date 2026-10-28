@@ -1,0 +1,775 @@
+<title>Daily Drill</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: one phone-width study column, bottom tab bar; code blocks always read as an editor pane. */
+:root {
+  --bg: #EEF2F6; --surface: #FFFFFF; --sunken: #E3E9F0; --ink: #132033; --muted: #5A677A; --line: #D3DBE5;
+  --accent: #2F6DB5; --accent-soft: #DCE8F6; --gold: #F2C230; --gold-ink: #1D1A0E;
+  --ok: #1D7F67; --ok-soft: #DDF1EA; --bad: #B9423A; --bad-soft: #F8E1DE; --warn: #9A6412; --warn-soft: #F6EAD3;
+  --code-bg: #101B2B; --code-ink: #DCE6F2; --code-kw: #F2C230; --code-str: #8FD4A9; --code-num: #F2A27B; --code-com: #7A8AA0; --code-fn: #8DB9F2;
+  --display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --body: "IBM Plex Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --r: 16px;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0B131E; --surface: #131F2E; --sunken: #0F1926; --ink: #E6EDF6; --muted: #92A0B4; --line: #23344A;
+  --accent: #78AEEA; --accent-soft: #1B2D45; --gold: #F5CF4B; --gold-ink: #1D1A0E;
+  --ok: #4CC7A0; --ok-soft: #12312A; --bad: #F07D72; --bad-soft: #3A1E1D; --warn: #E8B256; --warn-soft: #33281A;
+  --code-bg: #08101A; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #0B131E; --surface: #131F2E; --sunken: #0F1926; --ink: #E6EDF6; --muted: #92A0B4; --line: #23344A;
+  --accent: #78AEEA; --accent-soft: #1B2D45; --gold: #F5CF4B; --gold-ink: #1D1A0E;
+  --ok: #4CC7A0; --ok-soft: #12312A; --bad: #F07D72; --bad-soft: #3A1E1D; --warn: #E8B256; --warn-soft: #33281A;
+  --code-bg: #08101A; color-scheme: dark; }
+
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font: 400 1rem/1.55 var(--body); -webkit-font-smoothing: antialiased; }
+button { font: inherit; color: inherit; cursor: pointer; }
+:focus-visible { outline: 2.5px solid var(--accent); outline-offset: 2px; }
+code, .mono { font-family: var(--mono); }
+p code, li code, .txt code { font-size: .88em; background: var(--sunken); border: 1px solid var(--line); border-radius: 5px; padding: .05em .35em; overflow-wrap: anywhere; }
+
+.wrap { max-width: 640px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 18px 110px; display: flex; flex-direction: column; gap: 18px; }
+.wrap.in-session { padding-bottom: 40px; }
+h1, h2, h3 { font-family: var(--display); margin: 0; text-wrap: balance; letter-spacing: -.01em; }
+h1 { font-size: 1.9rem; font-weight: 800; line-height: 1.1; }
+h2 { font-size: 1.2rem; font-weight: 600; }
+.eyebrow { font: 600 .72rem/1 var(--body); letter-spacing: .09em; text-transform: uppercase; color: var(--muted); }
+.muted { color: var(--muted); }
+.row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.spread { justify-content: space-between; }
+.stack { display: flex; flex-direction: column; gap: 10px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 16px; }
+
+/* Header */
+.top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.brand { display: flex; flex-direction: column; gap: 6px; }
+.sync { font-size: .78rem; color: var(--muted); display: inline-flex; align-items: center; gap: 6px; }
+.dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); flex: none; }
+.dot.on { background: var(--ok); }
+
+/* Streak strip */
+.streak { display: grid; grid-template-columns: auto 1fr; gap: 14px 16px; align-items: center; }
+.flame { font: 800 2.6rem/1 var(--display); color: var(--ink); font-variant-numeric: tabular-nums; }
+.flame small { display: block; font: 600 .72rem/1.2 var(--body); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-top: 4px; }
+.week { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+.day { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: .7rem; color: var(--muted); }
+.day i { width: 100%; max-width: 30px; aspect-ratio: 1; border-radius: 8px; background: var(--sunken); border: 1px solid var(--line); display: block; }
+.day i.l1 { background: var(--accent-soft); border-color: var(--accent); }
+.day i.l2 { background: var(--gold); border-color: var(--gold); }
+.day.today span { color: var(--ink); font-weight: 600; }
+.goal { grid-column: 1 / -1; display: flex; flex-direction: column; gap: 6px; }
+.bar { height: 8px; border-radius: 99px; background: var(--sunken); overflow: hidden; }
+.bar > b { display: block; height: 100%; background: var(--accent); border-radius: 99px; transition: width .4s ease; }
+.bar.gold > b { background: var(--gold); }
+
+/* Buttons */
+.btn { border: 1px solid var(--line); background: var(--surface); border-radius: 12px; padding: 12px 16px; font-weight: 600; min-height: 48px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-align: center; }
+.btn:hover { border-color: var(--accent); }
+.btn.primary { background: var(--gold); color: var(--gold-ink); border-color: var(--gold); }
+.btn.primary:hover { filter: brightness(1.04); }
+.btn.blue { background: var(--accent); color: var(--surface); border-color: var(--accent); }
+.btn.danger { background: var(--bad); border-color: var(--bad); color: var(--surface); }
+.btn.ghost { background: transparent; }
+.btn.block { width: 100%; }
+.btn[disabled] { opacity: .45; cursor: not-allowed; filter: none; }
+.btn.sm { min-height: 38px; padding: 7px 12px; font-size: .88rem; border-radius: 10px; }
+.icon-btn { border: 1px solid var(--line); background: var(--surface); border-radius: 10px; width: 42px; height: 42px; display: inline-grid; place-items: center; flex: none; }
+.icon-btn[aria-pressed="true"] { background: var(--gold); border-color: var(--gold); color: var(--gold-ink); }
+.icon-btn svg { width: 20px; height: 20px; }
+
+/* Hero sprint card */
+.hero { background: var(--code-bg); color: var(--code-ink); border: none; padding: 20px; display: flex; flex-direction: column; gap: 14px; position: relative; overflow: hidden; }
+.hero h2 { font-size: 1.5rem; font-weight: 800; color: #fff; }
+.hero .muted { color: #9DB0C7; }
+.hero .prompt-line { font: 400 .85rem/1.5 var(--mono); color: var(--code-com); }
+.hero .prompt-line b { color: var(--code-kw); font-weight: 600; }
+.hero .mix { display: flex; gap: 8px; flex-wrap: wrap; }
+.pill { display: inline-flex; align-items: center; gap: 6px; border-radius: 99px; padding: 3px 10px; font-size: .78rem; font-weight: 600; border: 1px solid var(--line); background: var(--surface); color: var(--muted); white-space: nowrap; }
+.hero .pill { background: rgba(255,255,255,.06); border-color: rgba(255,255,255,.14); color: var(--code-ink); }
+.pill.easy { color: var(--ok); border-color: currentColor; background: transparent; }
+.pill.medium { color: var(--warn); border-color: currentColor; background: transparent; }
+.pill.hard { color: var(--bad); border-color: currentColor; background: transparent; }
+.pill.st-solved { color: var(--ok); background: var(--ok-soft); border-color: transparent; }
+.pill.st-review { color: var(--warn); background: var(--warn-soft); border-color: transparent; }
+.pill.st-unseen { color: var(--muted); }
+
+.quick { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.quick .btn { justify-content: space-between; text-align: left; }
+.quick .btn span.n { font: 600 .85rem var(--mono); color: var(--muted); }
+
+/* Topic path */
+.path { display: flex; flex-direction: column; gap: 0; }
+.topic { display: grid; grid-template-columns: 30px 1fr auto; gap: 12px; align-items: center; padding: 12px 4px; border: none; background: none; text-align: left; border-bottom: 1px solid var(--line); width: 100%; }
+.topic:last-child { border-bottom: none; }
+.topic:hover h3 { color: var(--accent); }
+.topic .idx { font: 600 .8rem var(--mono); color: var(--muted); text-align: center; }
+.topic h3 { font: 600 1rem/1.3 var(--body); }
+.topic .meta { font-size: .78rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.topic .bar { margin-top: 6px; height: 5px; }
+.topic.done .idx { color: var(--ok); }
+.later { display: flex; flex-wrap: wrap; gap: 8px; }
+.later span { border: 1px dashed var(--line); border-radius: 10px; padding: 6px 10px; font-size: .85rem; color: var(--muted); }
+
+/* Tab bar */
+.tabs { position: fixed; left: 0; right: 0; bottom: 0; background: var(--surface); border-top: 1px solid var(--line); padding-bottom: env(safe-area-inset-bottom, 0px); padding-left: max(8px, env(safe-area-inset-left, 0px)); padding-right: max(8px, env(safe-area-inset-right, 0px)); z-index: 5; }
+.tabs nav { max-width: 640px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); }
+.tabs button { background: none; border: none; padding: 10px 4px 12px; display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: .75rem; font-weight: 600; color: var(--muted); }
+.tabs button svg { width: 22px; height: 22px; }
+.tabs button[aria-current="page"] { color: var(--accent); }
+
+/* Chips */
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { border: 1px solid var(--line); background: var(--surface); border-radius: 99px; padding: 7px 13px; font-size: .88rem; font-weight: 500; min-height: 38px; }
+.chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--surface); }
+.field { display: flex; flex-direction: column; gap: 8px; }
+.field > label, .field > .lbl { font-weight: 600; font-size: .9rem; }
+
+/* Question */
+.qhead { display: flex; align-items: center; gap: 10px; }
+.qhead .bar { flex: 1; }
+.qhead .count { font: 600 .85rem var(--mono); color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.qmeta { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.qid { font: 600 .78rem var(--mono); color: var(--muted); letter-spacing: .02em; }
+.prompt { font: 600 1.18rem/1.4 var(--body); margin: 0; }
+pre.code { margin: 0; background: var(--code-bg); color: var(--code-ink); border-radius: 12px; padding: 14px 16px; overflow-x: auto; font: 400 .9rem/1.6 var(--mono); tab-size: 4; }
+pre.code .k { color: var(--code-kw); }
+pre.code .s { color: var(--code-str); }
+pre.code .n { color: var(--code-num); }
+pre.code .c { color: var(--code-com); font-style: italic; }
+pre.code .f { color: var(--code-fn); }
+pre.code .d { color: var(--code-num); }
+.opts { display: flex; flex-direction: column; gap: 10px; }
+.opt { display: grid; grid-template-columns: 32px 1fr auto; gap: 12px; align-items: center; text-align: left; background: var(--surface); border: 1.5px solid var(--line); border-radius: 14px; padding: 12px 14px; min-height: 56px; width: 100%; }
+.opt:hover:not([disabled]) { border-color: var(--accent); }
+.opt .letter { width: 30px; height: 30px; border-radius: 8px; display: grid; place-items: center; font: 600 .85rem var(--mono); background: var(--sunken); color: var(--muted); }
+.opt .val { min-width: 0; overflow-wrap: anywhere; }
+.opt .val.mono { font: 400 .9rem/1.45 var(--mono); white-space: pre-wrap; }
+.opt .tag { font-size: .75rem; font-weight: 600; white-space: nowrap; }
+.opt[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
+.opt[aria-pressed="true"] .letter { background: var(--accent); color: var(--surface); }
+.opt[disabled] { cursor: default; }
+.opt.is-right { border-color: var(--ok); background: var(--ok-soft); }
+.opt.is-right .letter { background: var(--ok); color: var(--surface); }
+.opt.is-right .tag { color: var(--ok); }
+.opt.is-wrong { border-color: var(--bad); background: var(--bad-soft); }
+.opt.is-wrong .letter { background: var(--bad); color: var(--surface); }
+.opt.is-wrong .tag { color: var(--bad); }
+.opt.faded { opacity: .55; }
+.verdict { display: flex; align-items: center; gap: 10px; font: 800 1.35rem/1.2 var(--display); }
+.verdict.ok { color: var(--ok); }
+.verdict.no { color: var(--bad); }
+.verdict svg { width: 26px; height: 26px; flex: none; }
+.explain { display: flex; flex-direction: column; gap: 14px; }
+.explain section { display: flex; flex-direction: column; gap: 4px; }
+.explain .txt { margin: 0; }
+.explain .key .txt { font-weight: 600; }
+.explain .trap { background: var(--warn-soft); border-radius: 12px; padding: 12px 14px; }
+.explain .trap .eyebrow { color: var(--warn); }
+.answer-line { font: 400 .92rem/1.5 var(--mono); white-space: pre-wrap; overflow-wrap: anywhere; background: var(--ok-soft); border-radius: 10px; padding: 10px 12px; }
+.actions { display: flex; gap: 10px; }
+.actions .btn.grow { flex: 1; }
+.sticky-act { position: sticky; bottom: 0; padding-block: 12px calc(12px + env(safe-area-inset-bottom, 0px)); background: linear-gradient(to top, var(--bg) 70%, transparent); }
+
+/* Results */
+.score { font: 800 3.4rem/1 var(--display); font-variant-numeric: tabular-nums; }
+.score small { font-size: 1.4rem; color: var(--muted); }
+.list { display: flex; flex-direction: column; }
+.li { display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; align-items: center; padding: 12px 2px; border: none; border-bottom: 1px solid var(--line); background: none; text-align: left; width: 100%; }
+.li:last-child { border-bottom: none; }
+.li .t { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: .92rem; }
+.li .sub { grid-column: 1; display: flex; gap: 8px; align-items: center; font-size: .78rem; color: var(--muted); }
+.li .pill { grid-row: 1 / span 2; grid-column: 2; }
+.li:hover .t { color: var(--accent); }
+
+/* Library */
+.search { width: 100%; border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 12px; padding: 12px 14px; font: inherit; min-height: 48px; }
+select.search { appearance: auto; }
+.empty { text-align: center; padding: 28px 16px; color: var(--muted); display: flex; flex-direction: column; gap: 10px; align-items: center; }
+
+/* Progress */
+.tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.tile { display: flex; flex-direction: column; gap: 2px; }
+.tile b { font: 800 1.8rem/1.1 var(--display); font-variant-numeric: tabular-nums; }
+.tile span { font-size: .8rem; color: var(--muted); }
+.tbl { width: 100%; border-collapse: collapse; font-size: .88rem; }
+.tbl th { text-align: left; font-weight: 600; color: var(--muted); font-size: .72rem; letter-spacing: .06em; text-transform: uppercase; padding: 0 6px 8px 0; }
+.tbl td { padding: 9px 6px 9px 0; border-top: 1px solid var(--line); vertical-align: middle; font-variant-numeric: tabular-nums; }
+.tbl td.num { text-align: right; white-space: nowrap; }
+.tbl th.num { text-align: right; }
+.tbl .bar { height: 5px; min-width: 50px; }
+.heat { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; }
+.heat i { aspect-ratio: 1; border-radius: 5px; background: var(--sunken); border: 1px solid var(--line); display: block; }
+.heat i.l1 { background: var(--accent-soft); border-color: var(--accent); }
+.heat i.l2 { background: var(--accent); border-color: var(--accent); }
+.heat i.l3 { background: var(--gold); border-color: var(--gold); }
+.heat i.future { visibility: hidden; }
+.confirm { border: 1.5px solid var(--bad); background: var(--bad-soft); border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+
+.toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(84px + env(safe-area-inset-bottom, 0px)); background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: 12px; font-size: .9rem; z-index: 20; max-width: calc(100% - 32px); box-shadow: 0 8px 24px rgba(0,0,0,.25); }
+.loading { padding: 60px 0; text-align: center; color: var(--muted); }
+.fade-in { animation: fade .25s ease both; }
+@keyframes fade { from { opacity: .4; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .fade-in { animation: none; } .bar > b { transition: none; } }
+@media (min-width: 560px) { .tiles { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+</style>
+
+<div id="app" class="wrap"><div class="loading">Loading questions…</div></div>
+<div class="tabs" id="tabs" hidden>
+  <nav aria-label="Main">
+    <button data-tab="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>Home</button>
+    <button data-tab="library"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16M4 12h16M4 19h10"/></svg>Library</button>
+    <button data-tab="progress"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 20V10M12 20V4M19 20v-7"/></svg>Progress</button>
+  </nav>
+</div>
+<div id="toast" class="toast" hidden role="status" aria-live="polite"></div>
+
+<script>
+"use strict";
+/* ── Content manifest: add a bank here after running build.py ── */
+const BANKS = [{ id: "python", file: "banks/python.json" }];
+const LATER = ["NumPy", "PyTorch", "Classical ML", "Deep Learning", "DSA patterns"];
+const DAILY_SIZE = 10, DAILY_GOAL = 10, REVIEW_SLOTS = 4;
+const LS_KEY = "dailydrill.v1";
+const DIFF_RANK = { easy: 0, medium: 1, hard: 2 };
+
+const S = {
+  qs: [], byId: new Map(), topics: [], order: [],
+  progress: {}, activity: {}, session: null,
+  view: "home", setup: null, lib: { q: "", filter: "all", topic: "" },
+  confirmReset: false, backup: null,
+};
+let db = null, sync = "local", localOk = true;
+const NATIVE = !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
+
+/* ── Utilities ── */
+const $ = (sel) => document.querySelector(sel);
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const inline = (s) => esc(s).replace(/`([^`]+)`/g, "<code>$1</code>");
+const dayKey = (t = Date.now()) => { const d = new Date(t); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); };
+const pct = (a, b) => (b ? Math.round((100 * a) / b) : 0);
+const shuffle = (a) => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+let toastTimer;
+function toast(msg, ms = 2600) { const t = $("#toast"); t.textContent = msg; t.hidden = false; clearTimeout(toastTimer); toastTimer = setTimeout(() => (t.hidden = true), ms); }
+
+const KW = new Set("False None True and as assert async await break class continue def del elif else except finally for from global if import in is lambda nonlocal not or pass raise return try while with yield".split(" "));
+const BI = new Set("print len range list dict set tuple int str float bool type sorted sum min max map filter zip enumerate iter next any all abs round isinstance issubclass super object repr ord chr open hash id reversed property classmethod staticmethod".split(" "));
+function highlight(code) {
+  const re = /(#[^\n]*)|((?:[rRbBfFuU]{1,2})?(?:"""[\s\S]*?"""|'''[\s\S]*?'''|"(?:\\.|[^"\\\n])*"|'(?:\\.|[^'\\\n])*'))|(@[A-Za-z_][\w.]*)|(\b\d+(?:\.\d+)?\b)|([A-Za-z_]\w*)/g;
+  let out = "", last = 0, m;
+  while ((m = re.exec(code))) {
+    out += esc(code.slice(last, m.index));
+    const [t] = m;
+    if (m[1]) out += `<span class="c">${esc(t)}</span>`;
+    else if (m[2]) out += `<span class="s">${esc(t)}</span>`;
+    else if (m[3]) out += `<span class="d">${esc(t)}</span>`;
+    else if (m[4]) out += `<span class="n">${esc(t)}</span>`;
+    else if (KW.has(t)) out += `<span class="k">${t}</span>`;
+    else if (BI.has(t)) out += `<span class="f">${t}</span>`;
+    else out += esc(t);
+    last = re.lastIndex;
+  }
+  return out + esc(code.slice(last));
+}
+const ICON = {
+  check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>',
+  x: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>',
+  mark: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M6 3h12v18l-6-4-6 4z"/></svg>',
+  copy: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 00-1-1H5a1 1 0 00-1 1v10a1 1 0 001 1h3"/></svg>',
+};
+
+/* ── Persistence: this device first, then synced to the owner's account when available ── */
+function loadLocal() {
+  try { const d = JSON.parse(localStorage.getItem(LS_KEY) || "{}"); S.progress = d.progress || {}; S.activity = d.activity || {}; S.session = d.session || null; }
+  catch { localOk = false; }
+}
+function saveLocal() {
+  try { localStorage.setItem(LS_KEY, JSON.stringify({ progress: S.progress, activity: S.activity, session: S.session })); localOk = true; }
+  catch { localOk = false; }
+}
+const chains = {};
+function remoteSet(path, data) {
+  if (!db) return Promise.resolve(true);
+  const body = JSON.parse(JSON.stringify(data));
+  const run = () => db.doc(path).set(body).then(() => true, (e) => {
+    if (e && e.code === "unavailable") return new Promise((r) => setTimeout(r, 400 + Math.random() * 600)).then(() => db.doc(path).set(body)).then(() => true, () => false);
+    return false;
+  });
+  const p = (chains[path] || Promise.resolve()).then(run);
+  chains[path] = p;
+  return p;
+}
+function remoteDelete(path) {
+  if (!db) return Promise.resolve(true);
+  const p = (chains[path] || Promise.resolve()).then(() => db.doc(path).delete()).then(() => true, () => false);
+  chains[path] = p;
+  return p;
+}
+async function connectSync() {
+  let ns = null;
+  try { ns = window.claude && window.claude.use ? await window.claude.use("db") : null; } catch { ns = null; }
+  if (!ns) { sync = "local"; render(); return; }
+  try {
+    const snap = await ns.collection("progress").limit(1000).get();
+    const push = [];
+    const remote = {};
+    snap.docs.forEach((d) => { if (d.exists) remote[d.id] = d.data(); });
+    for (const [id, r] of Object.entries(remote)) {
+      const l = S.progress[id];
+      if (!l || (r.updatedAt || 0) > (l.updatedAt || 0)) S.progress[id] = { ...r };
+    }
+    for (const [id, l] of Object.entries(S.progress)) {
+      const r = remote[id];
+      if (!r || (l.updatedAt || 0) > (r.updatedAt || 0)) push.push(id);
+    }
+    const act = await ns.doc("meta/activity").get();
+    const rdays = (act.exists && act.data().days) || {};
+    let actChanged = false;
+    for (const [k, v] of Object.entries(rdays)) {
+      const l = S.activity[k];
+      if (!l || v.n > l.n) S.activity[k] = { ...v };
+    }
+    for (const [k, v] of Object.entries(S.activity)) if (!rdays[k] || rdays[k].n < v.n) actChanged = true;
+    db = ns; sync = "synced";
+    reconcileRevisions();
+    saveLocal();
+    for (const id of push) await remoteSet("progress/" + id, S.progress[id]);
+    if (actChanged) remoteSet("meta/activity", { days: S.activity });
+  } catch (e) {
+    db = null; sync = "local";
+  }
+  render();
+}
+
+/* ── Content ── */
+async function loadBanks() {
+  for (const b of BANKS) {
+    const res = await fetch(b.file);
+    if (!res.ok) throw new Error(`Could not load ${b.file} (${res.status})`);
+    const bank = await res.json();
+    bank.topics.forEach((t) => S.topics.push({ key: bank.id + "/" + t.id, title: t.title, bank: bank.title }));
+    bank.questions.forEach((q) => { q.topicKey = bank.id + "/" + q.topic; S.qs.push(q); S.byId.set(q.id, q); });
+  }
+  const tIndex = Object.fromEntries(S.topics.map((t, i) => [t.key, i]));
+  S.order = S.qs.slice().sort((a, b) => tIndex[a.topicKey] - tIndex[b.topicKey] || DIFF_RANK[a.difficulty] - DIFF_RANK[b.difficulty] || a.id.localeCompare(b.id));
+}
+/* When a question's correct answer changes in a new revision, send it back to review. */
+function reconcileRevisions() {
+  for (const [id, p] of Object.entries(S.progress)) {
+    const q = S.byId.get(id);
+    if (!q || !p.attempts) continue;
+    if ((p.rev || 1) < q.revision) {
+      const nowAnswer = q.choices[q.correctIndex];
+      if (p.answerText && p.answerText !== nowAnswer && p.status === "solved") p.status = "review";
+      p.rev = q.revision;
+    }
+  }
+}
+const statusOf = (id) => { const p = S.progress[id]; return !p || !p.attempts ? "unseen" : p.status; };
+const STATUS_LABEL = { unseen: "Unseen", solved: "Solved", review: "Needs review" };
+
+/* ── Sessions ── */
+function newSession(kind, title, ids) {
+  S.session = { kind, title, ids, idx: 0, picked: null, submitted: false, results: {},
+    orders: Object.fromEntries(ids.map((id) => [id, shuffle([0, 1, 2, 3])])) };
+  S.view = "question";
+  saveLocal(); render(); scrollTo(0, 0);
+}
+function dailyIds() {
+  const today = dayKey();
+  const review = S.qs.filter((q) => statusOf(q.id) === "review" && dayKey(S.progress[q.id].lastAt) !== today)
+    .sort((a, b) => S.progress[a.id].lastAt - S.progress[b.id].lastAt).slice(0, REVIEW_SLOTS);
+  const fresh = S.order.filter((q) => statusOf(q.id) === "unseen").slice(0, DAILY_SIZE - review.length);
+  let extra = [];
+  if (review.length + fresh.length < DAILY_SIZE) {
+    const used = new Set([...review, ...fresh].map((q) => q.id));
+    extra = S.qs.filter((q) => statusOf(q.id) === "review" && !used.has(q.id)).slice(0, DAILY_SIZE - review.length - fresh.length);
+  }
+  const out = [], rv = [...review, ...extra];
+  fresh.forEach((q, i) => { out.push(q); if (i % 2 === 1 && rv.length) out.push(rv.shift()); });
+  return [...out, ...rv].map((q) => q.id);
+}
+function dailyMix() {
+  const ids = dailyIds();
+  const review = ids.filter((id) => statusOf(id) === "review").length;
+  return { ids, review, fresh: ids.length - review };
+}
+function matchFilter(q, f) {
+  const st = statusOf(q.id);
+  if (f === "unsolved") return st !== "solved";
+  if (f === "solved") return st === "solved";
+  if (f === "review") return st === "review";
+  if (f === "unseen") return st === "unseen";
+  if (f === "attempted") return st !== "unseen";
+  if (f === "bookmarked") return !!(S.progress[q.id] && S.progress[q.id].bookmarked);
+  return true;
+}
+function setupMatches() {
+  const su = S.setup;
+  return S.qs.filter((q) => (su.topics.size === 0 || su.topics.has(q.topicKey)) && (su.diffs.size === 0 || su.diffs.has(q.difficulty)) && matchFilter(q, su.filter));
+}
+function recordAnswer(q, choice) {
+  const correct = choice === q.correctIndex;
+  const p = { attempts: 0, correct: 0, bookmarked: false, ...(S.progress[q.id] || {}) };
+  p.attempts += 1; if (correct) p.correct += 1;
+  p.status = correct ? "solved" : "review";
+  p.lastAt = p.updatedAt = Date.now();
+  p.rev = q.revision;
+  p.lastChoiceText = q.choices[choice];
+  p.answerText = q.choices[q.correctIndex];
+  S.progress[q.id] = p;
+  const k = dayKey(); const a = S.activity[k] || { n: 0, c: 0 };
+  a.n += 1; if (correct) a.c += 1; S.activity[k] = a;
+  saveLocal();
+  if (!localOk && !db) toast("This answer could not be saved: browser storage is blocked. Open the app in a normal (not private) window.", 5000);
+  Promise.all([remoteSet("progress/" + q.id, p), remoteSet("meta/activity", { days: S.activity })]).then(([a1, a2]) => {
+    if (!(a1 && a2)) toast(localOk ? "Saved on this device. Account sync failed and will retry next launch." : "Could not save this answer. Check your connection.", 4000);
+  });
+  return correct;
+}
+function toggleBookmark(id) {
+  const p = { attempts: 0, correct: 0, status: "unseen", ...(S.progress[id] || {}) };
+  p.bookmarked = !p.bookmarked; p.updatedAt = Date.now();
+  S.progress[id] = p; saveLocal(); remoteSet("progress/" + id, p);
+  toast(p.bookmarked ? "Bookmarked" : "Bookmark removed", 1400);
+}
+function streak() {
+  let n = 0; const d = new Date();
+  if (!(S.activity[dayKey(d)] || {}).n) d.setDate(d.getDate() - 1);
+  while ((S.activity[dayKey(d)] || {}).n) { n++; d.setDate(d.getDate() - 1); }
+  return n;
+}
+
+/* ── Views ── */
+function render() {
+  const app = $("#app");
+  const inSession = S.view === "question" || S.view === "results";
+  $("#tabs").hidden = inSession || !S.qs.length;
+  app.classList.toggle("in-session", inSession);
+  document.querySelectorAll("#tabs button").forEach((b) => b.setAttribute("aria-current", b.dataset.tab === S.view || (S.view === "setup" && b.dataset.tab === "home") ? "page" : "false"));
+  const v = { home: viewHome, setup: viewSetup, question: viewQuestion, results: viewResults, library: viewLibrary, progress: viewProgress }[S.view] || viewHome;
+  app.innerHTML = v();
+}
+function syncBadge() {
+  return sync === "synced"
+    ? `<span class="sync"><span class="dot on"></span>Synced to your Claude account</span>`
+    : `<span class="sync"><span class="dot"></span>Saved on this ${NATIVE ? "phone" : "device"}</span>`;
+}
+function viewHome() {
+  const today = S.activity[dayKey()] || { n: 0, c: 0 };
+  const st = streak();
+  const days = [...Array(7)].map((_, i) => { const d = new Date(); d.setDate(d.getDate() - 6 + i); const a = S.activity[dayKey(d)]; const lv = !a ? "" : a.n >= DAILY_GOAL ? "l2" : "l1"; return `<div class="day ${i === 6 ? "today" : ""}"><i class="${lv}" title="${a ? a.n : 0} answered"></i><span>${"SMTWTFS"[d.getDay()]}</span></div>`; }).join("");
+  const mix = dailyMix();
+  const reviewN = S.qs.filter((q) => statusOf(q.id) === "review").length;
+  const bookN = S.qs.filter((q) => matchFilter(q, "bookmarked")).length;
+  const sess = S.session && S.session.ids.length && S.view !== "results" && S.session.idx < S.session.ids.length ? S.session : null;
+  const topics = S.topics.map((t, i) => {
+    const qs = S.qs.filter((q) => q.topicKey === t.key);
+    const solved = qs.filter((q) => statusOf(q.id) === "solved").length;
+    const rv = qs.filter((q) => statusOf(q.id) === "review").length;
+    return `<button class="topic ${solved === qs.length ? "done" : ""}" data-act="topic" data-topic="${t.key}">
+      <span class="idx">${solved === qs.length ? "✓" : String(i + 1).padStart(2, "0")}</span>
+      <span><h3>${esc(t.title)}</h3><div class="bar"><b style="width:${pct(solved, qs.length)}%"></b></div></span>
+      <span class="meta">${solved}/${qs.length}${rv ? ` · <span style="color:var(--warn)">${rv} to review</span>` : ""}</span></button>`;
+  }).join("");
+  return `<div class="stack fade-in" style="gap:18px">
+    <header class="top"><div class="brand"><span class="eyebrow">Python interview prep</span><h1>Daily Drill</h1>${syncBadge()}</div></header>
+    <div class="card streak">
+      <div class="flame">${st}<small>day streak</small></div>
+      <div class="week" aria-label="Last 7 days">${days}</div>
+      <div class="goal"><div class="row spread"><span class="muted" style="font-size:.85rem">Today: ${today.n} answered${today.n ? `, ${today.c} correct` : ""}</span><span class="mono muted" style="font-size:.8rem">${Math.min(today.n, DAILY_GOAL)}/${DAILY_GOAL}</span></div><div class="bar gold"><b style="width:${pct(Math.min(today.n, DAILY_GOAL), DAILY_GOAL)}%"></b></div></div>
+    </div>
+    ${sess ? `<div class="card row spread"><div><div class="eyebrow">In progress</div><div style="font-weight:600">${esc(sess.title)} · question ${sess.idx + 1} of ${sess.ids.length}</div></div><button class="btn blue sm" data-act="resume">Resume</button></div>` : ""}
+    <div class="card hero">
+      <div class="prompt-line">&gt;&gt;&gt; <b>daily_sprint</b>(n=${DAILY_SIZE})</div>
+      <h2>Daily Sprint</h2>
+      ${mix.ids.length
+        ? `<p class="muted" style="margin:0">${mix.fresh} new question${mix.fresh === 1 ? "" : "s"} in curriculum order${mix.review ? `, plus ${mix.review} you missed earlier` : ""}. About ${Math.max(5, Math.round(mix.ids.length * 1.2))} minutes.</p>
+           <button class="btn primary block" data-act="daily">Start sprint</button>`
+        : `<p class="muted" style="margin:0">Every question is solved. Practise solved ones from Custom Sprint, or add a new bank.</p>`}
+    </div>
+    <div class="quick">
+      <button class="btn" data-act="custom">Custom sprint <span class="n">›</span></button>
+      <button class="btn" data-act="review" ${reviewN ? "" : "disabled"}>Review mistakes <span class="n">${reviewN}</span></button>
+      <button class="btn" data-act="bookmarks" ${bookN ? "" : "disabled"}>Bookmarks <span class="n">${bookN}</span></button>
+      <button class="btn" data-act="random">Random 5 <span class="n">›</span></button>
+    </div>
+    <section class="card stack" style="gap:4px"><div class="row spread"><h2>Python path</h2><span class="muted" style="font-size:.8rem">basics → advanced</span></div><div class="path">${topics}</div></section>
+    <section class="stack"><span class="eyebrow">Later tracks</span><div class="later">${LATER.map((t) => `<span>${t}</span>`).join("")}</div></section>
+  </div>`;
+}
+function viewSetup() {
+  const su = S.setup; const n = setupMatches().length; const take = su.size === 0 ? n : Math.min(su.size, n);
+  const chip = (group, val, label, on) => `<button class="chip" data-act="chip" data-group="${group}" data-val="${val}" aria-pressed="${on}">${label}</button>`;
+  return `<div class="stack fade-in" style="gap:20px">
+    <div class="row spread"><h1>Custom sprint</h1><button class="btn ghost sm" data-act="home">Cancel</button></div>
+    <div class="field"><span class="lbl">Topics <span class="muted" style="font-weight:400">(none selected = all)</span></span><div class="chips">${S.topics.map((t) => chip("topic", t.key, esc(t.title), su.topics.has(t.key))).join("")}</div></div>
+    <div class="field"><span class="lbl">Difficulty</span><div class="chips">${["easy", "medium", "hard"].map((d) => chip("diff", d, d[0].toUpperCase() + d.slice(1), su.diffs.has(d))).join("")}</div></div>
+    <div class="field"><span class="lbl">Progress</span><div class="chips">${[["unsolved", "Unsolved"], ["review", "Needs review"], ["solved", "Solved"], ["all", "All"]].map(([v, l]) => chip("filter", v, l, su.filter === v)).join("")}</div></div>
+    <div class="field"><span class="lbl">Length</span><div class="chips">${[5, 10, 20, 0].map((v) => chip("size", v, v ? v + " questions" : "All matching", su.size === v)).join("")}</div></div>
+    <div class="card row spread"><span><b style="font-variant-numeric:tabular-nums">${n}</b> matching question${n === 1 ? "" : "s"}${n && take < n ? `, sprint uses ${take}` : ""}</span></div>
+    ${n ? "" : `<p class="muted" style="margin:0">Nothing matches. Try clearing a difficulty, picking more topics, or switching Progress to All.</p>`}
+    <button class="btn primary block" data-act="start-custom" ${n ? "" : "disabled"}>Start ${take || ""} question${take === 1 ? "" : "s"}</button>
+  </div>`;
+}
+function viewQuestion() {
+  const s = S.session; const id = s.ids[s.idx]; const q = S.byId.get(id);
+  if (!q) { s.idx++; return s.idx < s.ids.length ? viewQuestion() : (S.view = "results", viewResults()); }
+  const order = s.orders[id] || [0, 1, 2, 3];
+  const res = s.results[id];
+  const done = s.submitted;
+  const correctSoFar = Object.values(s.results).filter(Boolean).length;
+  const answered = Object.keys(s.results).length;
+  const p = S.progress[id] || {};
+  const topic = S.topics.find((t) => t.key === q.topicKey);
+  const opts = order.map((orig, pos) => {
+    const letter = "ABCD"[pos];
+    let cls = "", tag = "";
+    if (done) {
+      if (orig === q.correctIndex) { cls = "is-right"; tag = "✓ Correct answer"; }
+      else if (orig === s.picked) { cls = "is-wrong"; tag = "✗ Your answer"; }
+      else cls = "faded";
+    }
+    return `<button class="opt ${cls}" data-act="pick" data-orig="${orig}" aria-pressed="${!done && s.picked === orig}" ${done ? "disabled" : ""}>
+      <span class="letter">${letter}</span><span class="val ${q.monoChoices ? "mono" : ""}">${q.monoChoices ? esc(q.choices[orig]) : inline(q.choices[orig])}</span><span class="tag">${tag}</span></button>`;
+  }).join("");
+  const last = s.idx === s.ids.length - 1;
+  const explain = done ? `<div class="card explain fade-in" id="explain">
+      <div class="verdict ${res ? "ok" : "no"}">${res ? ICON.check + "Correct" : ICON.x + "Not quite"}</div>
+      <section><span class="eyebrow">Answer</span><div class="answer-line">${esc(q.choices[q.correctIndex])}</div></section>
+      <section class="key"><span class="eyebrow">Key idea</span><p class="txt">${inline(q.keyIdea)}</p></section>
+      <section><span class="eyebrow">Why</span><p class="txt">${inline(q.reasoning)}</p></section>
+      <section class="trap"><span class="eyebrow">Common trap</span><p class="txt">${inline(q.commonTrap)}</p></section>
+    </div>` : "";
+  return `<div class="stack" style="gap:16px">
+    <div class="qhead"><button class="icon-btn" data-act="leave" aria-label="Leave sprint">${ICON.x}</button>
+      <div class="bar"><b style="width:${pct(answered, s.ids.length)}%"></b></div>
+      <span class="count">${s.idx + 1}/${s.ids.length} · ${correctSoFar}✓</span></div>
+    <div class="qmeta"><span class="qid">${q.id}</span><span class="pill ${q.difficulty}">${q.difficulty}</span><span class="muted" style="font-size:.82rem">${esc(topic ? topic.title : q.topic)}</span>
+      <span style="flex:1"></span>
+      <button class="icon-btn" data-act="bookmark" aria-pressed="${!!p.bookmarked}" aria-label="Bookmark">${ICON.mark}</button>
+      <button class="icon-btn" data-act="copy" aria-label="Copy question">${ICON.copy}</button></div>
+    ${q.prompt ? `<p class="prompt">${inline(q.prompt)}</p>` : ""}
+    ${q.code ? `<pre class="code"><code>${highlight(q.code)}</code></pre>` : ""}
+    <div class="opts" role="group" aria-label="Answer options">${opts}</div>
+    ${explain}
+    <div class="sticky-act actions">
+      ${done
+        ? `<button class="btn primary grow" data-act="next">${last ? "See results" : "Next question"}</button>`
+        : `<button class="btn primary grow" data-act="submit" ${s.picked === null ? "disabled" : ""}>Submit</button>`}
+    </div>
+  </div>`;
+}
+function viewResults() {
+  const s = S.session; const ids = s.ids.filter((id) => id in s.results);
+  const right = ids.filter((id) => s.results[id]).length;
+  const missed = ids.filter((id) => !s.results[id]);
+  return `<div class="stack fade-in" style="gap:18px">
+    <span class="eyebrow">${esc(s.title)} complete</span>
+    <div class="score">${right}<small> / ${ids.length}</small></div>
+    <p class="muted" style="margin:0">${ids.length ? `${pct(right, ids.length)}% accuracy. ` : ""}${missed.length ? `${missed.length} question${missed.length === 1 ? "" : "s"} moved to your review queue.` : ids.length ? "Clean sprint. Nothing to review." : ""}</p>
+    ${missed.length ? `<section class="card stack" style="gap:2px"><h2>To review</h2><div class="list">${missed.map(rowHtml).join("")}</div></section>` : ""}
+    <div class="stack">
+      ${missed.length ? `<button class="btn primary block" data-act="retry">Retry the ${missed.length} missed</button>` : ""}
+      <button class="btn block" data-act="home">Done</button>
+    </div>
+  </div>`;
+}
+function rowHtml(id) {
+  const q = S.byId.get(id); const st = statusOf(id); const p = S.progress[id] || {};
+  const first = (q.prompt && q.prompt !== "What does this print?" && q.prompt !== "What happens when this runs?") ? q.prompt : (q.code || "").split("\n")[0];
+  return `<button class="li" data-act="open" data-id="${id}"><span class="t">${esc(first.replace(/`/g, ""))}</span>
+    <span class="pill st-${st}">${STATUS_LABEL[st]}</span>
+    <span class="sub"><span class="mono">${id}</span><span>${q.difficulty}</span>${p.bookmarked ? "<span>· bookmarked</span>" : ""}</span></button>`;
+}
+function viewLibrary() {
+  const L = S.lib; const term = L.q.trim().toLowerCase();
+  const list = S.qs.filter((q) => (!L.topic || q.topicKey === L.topic) && matchFilter(q, L.filter) &&
+    (!term || (q.id + " " + q.prompt + " " + (q.code || "") + " " + q.topic).toLowerCase().includes(term)));
+  const filters = [["all", "All"], ["unseen", "Unseen"], ["attempted", "Attempted"], ["solved", "Solved"], ["review", "Needs review"], ["bookmarked", "Bookmarked"]];
+  return `<div class="stack fade-in" style="gap:16px">
+    <h1>Library</h1>
+    <input class="search" id="lib-q" type="search" placeholder="Search id, topic, or text" value="${esc(L.q)}" aria-label="Search questions">
+    <select class="search" id="lib-topic" aria-label="Topic"><option value="">All topics</option>${S.topics.map((t) => `<option value="${t.key}" ${L.topic === t.key ? "selected" : ""}>${esc(t.title)}</option>`).join("")}</select>
+    <div class="chips">${filters.map(([v, l]) => `<button class="chip" data-act="libf" data-val="${v}" aria-pressed="${L.filter === v}">${l}</button>`).join("")}</div>
+    <div class="muted" style="font-size:.85rem">${list.length} question${list.length === 1 ? "" : "s"}</div>
+    <div class="card" style="padding:4px 14px" id="lib-list">${list.length ? `<div class="list">${list.map((q) => rowHtml(q.id)).join("")}</div>` : `<div class="empty">No questions match.<button class="btn sm" data-act="lib-clear">Clear filters</button></div>`}</div>
+  </div>`;
+}
+function viewProgress() {
+  const total = S.qs.length;
+  const recs = S.qs.map((q) => S.progress[q.id]).filter((p) => p && p.attempts);
+  const solved = S.qs.filter((q) => statusOf(q.id) === "solved").length;
+  const review = S.qs.filter((q) => statusOf(q.id) === "review").length;
+  const att = recs.reduce((a, p) => a + p.attempts, 0), cor = recs.reduce((a, p) => a + p.correct, 0);
+  const rows = S.topics.map((t) => {
+    const qs = S.qs.filter((q) => q.topicKey === t.key);
+    const sv = qs.filter((q) => statusOf(q.id) === "solved").length;
+    const ps = qs.map((q) => S.progress[q.id]).filter((p) => p && p.attempts);
+    const a = ps.reduce((x, p) => x + p.attempts, 0), c = ps.reduce((x, p) => x + p.correct, 0);
+    return `<tr><td>${esc(t.title)}<div class="bar" style="margin-top:5px"><b style="width:${pct(sv, qs.length)}%"></b></div></td><td class="num">${sv}/${qs.length}</td><td class="num">${a ? pct(c, a) + "%" : "–"}</td></tr>`;
+  }).join("");
+  const diffRows = ["easy", "medium", "hard"].map((d) => {
+    const qs = S.qs.filter((q) => q.difficulty === d); const sv = qs.filter((q) => statusOf(q.id) === "solved").length;
+    return `<tr><td><span class="pill ${d}">${d}</span></td><td class="num">${sv}/${qs.length}</td><td class="num">${pct(sv, qs.length)}%</td></tr>`;
+  }).join("");
+  // 5-week activity grid ending this week (Sunday-first rows)
+  const end = new Date(); const start = new Date(); start.setDate(end.getDate() - end.getDay() - 28);
+  const cells = []; for (let i = 0; i < 35; i++) { const d = new Date(start); d.setDate(start.getDate() + i); const a = S.activity[dayKey(d)]; const fut = d > end; const lv = !a ? "" : a.n >= 20 ? "l3" : a.n >= DAILY_GOAL ? "l2" : "l1"; cells.push(`<i class="${fut ? "future" : lv}" title="${dayKey(d)}: ${a ? a.n : 0} answered"></i>`); }
+  const resetBlock = S.confirmReset
+    ? `<div class="confirm"><b>Delete all progress?</b><span style="font-size:.9rem">This removes ${Object.keys(S.progress).length} question records, bookmarks and your streak history${sync === "synced" ? " from this device and your synced account" : " from this device"}. It cannot be undone.</span><div class="row"><button class="btn sm" data-act="reset-cancel">Keep my progress</button><button class="btn danger sm" data-act="reset-do">Delete everything</button></div></div>`
+    : `<button class="btn sm" data-act="reset-ask" style="align-self:flex-start">Reset progress…</button>`;
+  return `<div class="stack fade-in" style="gap:18px">
+    <h1>Progress</h1>
+    <div class="tiles">
+      <div class="card tile"><b>${pct(solved, total)}%</b><span>Coverage · ${solved} of ${total} solved</span></div>
+      <div class="card tile"><b>${att ? pct(cor, att) + "%" : "–"}</b><span>Accuracy · ${cor}/${att} attempts</span></div>
+      <div class="card tile"><b>${review}</b><span>Need review</span></div>
+      <div class="card tile"><b>${streak()}</b><span>Day streak</span></div>
+    </div>
+    ${review ? `<button class="btn blue block" data-act="review">Review ${review} missed question${review === 1 ? "" : "s"}</button>` : ""}
+    <section class="card stack"><h2>By topic</h2><div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Topic</th><th class="num">Solved</th><th class="num">Accuracy</th></tr></thead><tbody>${rows}</tbody></table></div></section>
+    <section class="card stack"><h2>By difficulty</h2><table class="tbl"><thead><tr><th>Level</th><th class="num">Solved</th><th class="num">Coverage</th></tr></thead><tbody>${diffRows}</tbody></table></section>
+    <section class="card stack"><div class="row spread"><h2>Last 5 weeks</h2><span class="muted" style="font-size:.78rem">gold = goal of ${DAILY_GOAL} met</span></div><div class="heat">${cells.join("")}</div></section>
+    <section class="card stack"><h2>Data &amp; privacy</h2>
+      <p class="muted" style="margin:0;font-size:.9rem">No ads, analytics or tutor. Questions ship with the app. ${NATIVE ? "Progress is stored on this phone and works offline. Back it up before uninstalling the app." : sync === "synced" ? "Progress syncs to this artifact's private store, which only you (the owner) can read or write, so your phone and laptop stay in step." : "Progress is kept in this browser. Open the app while signed in to Claude as its owner to sync it across devices."}</p>
+      <p class="muted" style="margin:0;font-size:.85rem">Bank: ${total} Python questions; ${S.qs.filter((q) => q.monoChoices).length} code-output answers were verified by running them.</p>
+      ${backupBlock()}
+      ${resetBlock}</section>
+  </div>`;
+}
+
+/* ── Backup: move progress between the phone app and the Claude-hosted page ── */
+function backupBlock() {
+  if (S.backup === "export") return `<div class="field"><label for="bk-out">Backup code (copied if your device allows it)</label><textarea class="search mono" id="bk-out" rows="4" readonly style="font-size:.75rem">${esc(exportCode())}</textarea><div class="row"><button class="btn sm" data-act="bk-close">Done</button></div></div>`;
+  if (S.backup === "import") return `<div class="field"><label for="bk-in">Paste a backup code</label><textarea class="search mono" id="bk-in" rows="4" style="font-size:.75rem" placeholder='{"app":"daily-drill",...}'></textarea><span class="muted" style="font-size:.82rem">Records are merged: for each question, the more recent answer wins.</span><div class="row"><button class="btn sm" data-act="bk-close">Cancel</button><button class="btn blue sm" data-act="bk-restore">Restore</button></div></div>`;
+  return `<div class="row"><button class="btn sm" data-act="bk-export">Back up progress</button><button class="btn sm" data-act="bk-import">Restore from backup</button></div>`;
+}
+function exportCode() { return JSON.stringify({ app: "daily-drill", v: 1, exportedAt: new Date().toISOString(), progress: S.progress, activity: S.activity }); }
+function importCode(text) {
+  let d; try { d = JSON.parse(text); } catch { return "That isn't a backup code. Copy the whole code, from { to }."; }
+  if (!d || d.app !== "daily-drill" || typeof d.progress !== "object") return "That code isn't from Daily Drill.";
+  let n = 0;
+  for (const [id, r] of Object.entries(d.progress || {})) {
+    const l = S.progress[id];
+    if (r && typeof r === "object" && (!l || (r.updatedAt || 0) > (l.updatedAt || 0))) { S.progress[id] = { ...r }; n++; remoteSet("progress/" + id, S.progress[id]); }
+  }
+  for (const [k, v] of Object.entries(d.activity || {})) { const l = S.activity[k]; if (v && (!l || v.n > l.n)) S.activity[k] = { n: +v.n || 0, c: +v.c || 0 }; }
+  reconcileRevisions(); saveLocal(); remoteSet("meta/activity", { days: S.activity });
+  return `Restored ${n} question record${n === 1 ? "" : "s"}.`;
+}
+
+/* ── Events ── */
+function startDaily() { const ids = dailyIds(); if (ids.length) newSession("daily", "Daily Sprint", ids); }
+function copyQuestion(q) {
+  const order = S.session.orders[q.id] || [0, 1, 2, 3];
+  let txt = `Python interview practice question ${q.id} (${q.difficulty})\n\n${q.prompt}\n`;
+  if (q.code) txt += "\n```python\n" + q.code + "\n```\n";
+  txt += "\n" + order.map((o, i) => `${"ABCD"[i]}) ${q.choices[o]}`).join("\n");
+  if (S.session.submitted) txt += `\n\nI picked: ${q.choices[S.session.picked]}\nCorrect: ${q.choices[q.correctIndex]}\nExplain the concept and how to reason about it.`;
+  const fallback = () => toast("Copy is blocked here. Long-press the question text to copy it.", 3500);
+  try { navigator.clipboard.writeText(txt).then(() => toast("Question copied", 1400), fallback); } catch { fallback(); }
+}
+function finishOrNext() {
+  const s = S.session;
+  if (s.idx >= s.ids.length - 1) { s.idx = s.ids.length; S.view = "results"; }
+  else { s.idx++; s.picked = null; s.submitted = false; }
+  saveLocal(); render(); scrollTo(0, 0);
+}
+document.addEventListener("click", async (e) => {
+  const tab = e.target.closest("[data-tab]");
+  if (tab) { S.view = tab.dataset.tab; S.confirmReset = false; S.backup = null; render(); scrollTo(0, 0); return; }
+  const el = e.target.closest("[data-act]"); if (!el || el.disabled) return;
+  const act = el.dataset.act; const s = S.session;
+  switch (act) {
+    case "daily": startDaily(); break;
+    case "resume": S.view = "question"; render(); break;
+    case "home": S.view = "home"; if (s && s.idx >= s.ids.length) { S.session = null; saveLocal(); } render(); scrollTo(0, 0); break;
+    case "custom": S.setup = { topics: new Set(), diffs: new Set(), filter: "unsolved", size: 10 }; S.view = "setup"; render(); scrollTo(0, 0); break;
+    case "topic": S.setup = { topics: new Set([el.dataset.topic]), diffs: new Set(), filter: "unsolved", size: 10 }; S.view = "setup"; render(); scrollTo(0, 0); break;
+    case "chip": {
+      const su = S.setup, g = el.dataset.group, v = el.dataset.val;
+      if (g === "topic") su.topics.has(v) ? su.topics.delete(v) : su.topics.add(v);
+      else if (g === "diff") su.diffs.has(v) ? su.diffs.delete(v) : su.diffs.add(v);
+      else if (g === "filter") su.filter = v; else if (g === "size") su.size = +v;
+      render(); break;
+    }
+    case "start-custom": { const m = shuffle(setupMatches()); const take = S.setup.size || m.length; newSession("custom", "Custom Sprint", m.slice(0, take).map((q) => q.id)); break; }
+    case "review": { const ids = shuffle(S.qs.filter((q) => statusOf(q.id) === "review")).slice(0, 20).map((q) => q.id); if (ids.length) newSession("review", "Review", ids); break; }
+    case "bookmarks": { const ids = S.qs.filter((q) => matchFilter(q, "bookmarked")).map((q) => q.id); if (ids.length) newSession("bookmarks", "Bookmarks", ids); break; }
+    case "random": newSession("random", "Random 5", shuffle(S.qs).slice(0, 5).map((q) => q.id)); break;
+    case "open": newSession("single", "Single question", [el.dataset.id]); break;
+    case "retry": { const ids = s.ids.filter((id) => s.results[id] === false); newSession("retry", "Retry missed", shuffle(ids)); break; }
+    case "pick": if (!s.submitted) { s.picked = +el.dataset.orig; saveLocal(); render(); } break;
+    case "submit": {
+      if (s.picked === null || s.submitted) break;
+      const q = S.byId.get(s.ids[s.idx]);
+      s.results[q.id] = recordAnswer(q, s.picked); s.submitted = true; saveLocal(); render();
+      const ex = $("#explain"); if (ex) ex.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "nearest" });
+      break;
+    }
+    case "next": finishOrNext(); break;
+    case "leave": S.view = "home"; render(); toast("Sprint paused. Resume it from Home.", 2000); break;
+    case "bookmark": toggleBookmark(s.ids[s.idx]); render(); break;
+    case "copy": copyQuestion(S.byId.get(s.ids[s.idx])); break;
+    case "libf": S.lib.filter = el.dataset.val; render(); break;
+    case "lib-clear": S.lib = { q: "", filter: "all", topic: "" }; render(); break;
+    case "bk-export": {
+      S.backup = "export"; render();
+      const ta = $("#bk-out");
+      try { navigator.clipboard.writeText(ta.value).then(() => toast("Backup code copied", 1600), () => { ta.focus(); ta.select(); toast("Select the code and copy it", 2500); }); }
+      catch { ta.focus(); ta.select(); }
+      break;
+    }
+    case "bk-import": S.backup = "import"; render(); $("#bk-in").focus(); break;
+    case "bk-close": S.backup = null; render(); break;
+    case "bk-restore": { const msg = importCode($("#bk-in").value.trim()); if (msg.startsWith("Restored")) S.backup = null; render(); toast(msg, 3000); break; }
+    case "reset-ask": S.confirmReset = true; render(); break;
+    case "reset-cancel": S.confirmReset = false; render(); break;
+    case "reset-do": {
+      const ids = Object.keys(S.progress);
+      S.progress = {}; S.activity = {}; S.session = null; S.confirmReset = false; saveLocal(); render();
+      if (db) { toast("Deleting synced progress…", 2000); let ok = true; for (const id of ids) ok = (await remoteDelete("progress/" + id)) && ok; ok = (await remoteDelete("meta/activity")) && ok; toast(ok ? "Progress reset" : "Reset on this device. Some synced records could not be deleted; try again later.", 3500); }
+      else toast("Progress reset", 1600);
+      break;
+    }
+  }
+});
+document.addEventListener("input", (e) => {
+  if (e.target.id === "lib-q") { S.lib.q = e.target.value; const pos = e.target.selectionStart; render(); const i = $("#lib-q"); i.focus(); i.setSelectionRange(pos, pos); }
+});
+document.addEventListener("change", (e) => { if (e.target.id === "lib-topic") { S.lib.topic = e.target.value; render(); } });
+document.addEventListener("keydown", (e) => {
+  if (S.view !== "question" || e.metaKey || e.ctrlKey || e.altKey || /input|select|textarea/i.test(e.target.tagName)) return;
+  const s = S.session; const k = e.key.toLowerCase();
+  const pos = "1234".indexOf(k) >= 0 ? "1234".indexOf(k) : "abcd".indexOf(k);
+  if (pos >= 0 && !s.submitted) { s.picked = (s.orders[s.ids[s.idx]] || [0, 1, 2, 3])[pos]; render(); }
+  else if (k === "enter") { e.preventDefault(); (s.submitted ? $('[data-act="next"]') : $('[data-act="submit"]'))?.click(); }
+});
+
+/* ── Android back button (phone app only): step back to Home, exit from Home ── */
+try {
+  const capApp = window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App;
+  if (capApp) capApp.addListener("backButton", () => {
+    if (S.view === "home") { capApp.exitApp(); return; }
+    if (S.view === "question") toast("Sprint paused. Resume it from Home.", 2000);
+    if (S.view === "results") S.session = null;
+    S.view = "home"; S.confirmReset = false; S.backup = null; saveLocal(); render(); scrollTo(0, 0);
+  });
+} catch { /* not running inside the Android app */ }
+
+/* ── Boot ── */
+(async () => {
+  loadLocal();
+  try { await loadBanks(); }
+  catch (err) { $("#app").innerHTML = `<div class="empty"><b>Questions failed to load.</b><span>${esc(err.message)}. Reload the page; if it keeps failing, the bank file may be missing from this version.</span></div>`; return; }
+  reconcileRevisions();
+  if (S.session && !S.session.ids.every((id) => S.byId.has(id))) S.session.ids = S.session.ids.filter((id) => S.byId.has(id));
+  render();
+  connectSync();
+})();
+</script>

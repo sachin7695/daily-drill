@@ -1,0 +1,3182 @@
+{
+ "id": "python",
+ "title": "Python",
+ "python": "3.13.13",
+ "topics": [
+  {
+   "id": "basics",
+   "title": "Basics & Types"
+  },
+  {
+   "id": "strings",
+   "title": "Strings"
+  },
+  {
+   "id": "lists",
+   "title": "Lists & Tuples"
+  },
+  {
+   "id": "dicts",
+   "title": "Dicts & Sets"
+  },
+  {
+   "id": "comprehensions",
+   "title": "Comprehensions & Iteration"
+  },
+  {
+   "id": "functions",
+   "title": "Functions & Scope"
+  },
+  {
+   "id": "oop",
+   "title": "Classes & OOP"
+  },
+  {
+   "id": "errors",
+   "title": "Exceptions & Context Managers"
+  },
+  {
+   "id": "generators",
+   "title": "Generators & Decorators"
+  },
+  {
+   "id": "stdlib",
+   "title": "Standard Library Toolkit"
+  },
+  {
+   "id": "internals",
+   "title": "Performance & Internals"
+  }
+ ],
+ "questions": [
+  {
+   "id": "PY-BAS-001",
+   "revision": 1,
+   "subject": "python",
+   "topic": "basics",
+   "difficulty": "easy",
+   "prompt": "What does this print?",
+   "code": "print(7 // 2, 7 / 2, 7 % 2)",
+   "choices": [
+    "3 3.5 1",
+    "3.5 3.5 1",
+    "3 3 1",
+    "4 3.5 1"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "`//` is floor division, `/` is true division (always float), `%` is remainder.",
+   "reasoning": "7 // 2 floors 3.5 down to 3. 7 / 2 gives 3.5 even though both operands are ints. 7 % 2 is the remainder, 1.",
+   "commonTrap": "Expecting `/` to behave like integer division, as it did in Python 2 or does in C++.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-BAS-002",
+   "revision": 1,
+   "subject": "python",
+   "topic": "basics",
+   "difficulty": "easy",
+   "prompt": "What does this print?",
+   "code": "print(-7 // 2)",
+   "choices": [
+    "-3",
+    "-4",
+    "-3.5",
+    "-4.0"
+   ],
+   "correctIndex": 1,
+   "keyIdea": "Floor division rounds toward negative infinity, not toward zero.",
+   "reasoning": "-7 / 2 is -3.5. Flooring moves to the next lower integer, which is -4.",
+   "commonTrap": "Assuming truncation toward zero (-3), which is what C, C++ and Java do.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-BAS-003",
+   "revision": 1,
+   "subject": "python",
+   "topic": "basics",
+   "difficulty": "easy",
+   "prompt": "Which of these values is truthy?",
+   "choices": [
+    "0.0",
+    "\"\"",
+    "[0]",
+    "{}"
+   ],
+   "correctIndex": 2,
+   "keyIdea": "Empty containers, zero and None are falsy. Any non-empty container is truthy.",
+   "reasoning": "`[0]` is a list with one element, so it is non-empty and truthy, even though the element itself is falsy.",
+   "commonTrap": "Looking at the contents (0) instead of whether the container is empty.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-BAS-004",
+   "revision": 1,
+   "subject": "python",
+   "topic": "basics",
+   "difficulty": "easy",
+   "prompt": "What does this print?",
+   "code": "a = [1, 2]\nb = [1, 2]\nprint(a == b, a is b)",
+   "choices": [
+    "True True",
+    "True False",
+    "False False",
+    "False True"
+   ],
+   "correctIndex": 1,
+   "keyIdea": "`==` compares values; `is` compares identity (same object in memory).",
+   "reasoning": "Two separate list literals build two distinct objects with equal contents, so == is True and `is` is False.",
+   "commonTrap": "Using `is` to compare values. Reserve `is` for singletons like None.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-BAS-005",
+   "revision": 1,
+   "subject": "python",
+   "topic": "basics",
+   "difficulty": "easy",
+   "prompt": "What is the idiomatic way to check whether `x` is None?",
+   "choices": [
+    "if x == None:",
+    "if x is None:",
+    "if not x:",
+    "if x is 'None':"
+   ],
+   "correctIndex": 1,
+   "keyIdea": "None is a singleton, so test it by identity with `is`.",
+   "reasoning": "`x is None` is exact and cannot be fooled by a custom `__eq__`. PEP 8 recommends it.",
+   "commonTrap": "`if not x:` also fires for 0, '' and [], which is a different question.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-BAS-006",
+   "revision": 1,
+   "subject": "python",
+   "topic": "basics",
+   "difficulty": "easy",
+   "prompt": "What does this print?",
+   "code": "print(type(6 / 3))",
+   "choices": [
+    "<class 'int'>",
+    "<class 'float'>",
+    "<class 'decimal'>",
+    "<class 'number'>"
+   ],
+   "correctIndex": 1,
+   "keyIdea": "True division always returns a float, even when the result is whole.",
+   "reasoning": "6 / 3 is 2.0, a float. Use 6 // 3 if you need the int 2.",
+   "commonTrap": "Assuming an exact division keeps the int type.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-BAS-007",
+   "revision": 1,
+   "subject": "python",
+   "topic": "basics",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "print(0.1 + 0.2 == 0.3)",
+   "choices": [
+    "True",
+    "False",
+    "0.3",
+    "TypeError"
+   ],
+   "correctIndex": 1,
+   "keyIdea": "Floats are binary approximations; compare them with a tolerance.",
+   "reasoning": "0.1 + 0.2 is 0.30000000000000004 in binary floating point. Use `math.isclose(a, b)` for comparisons.",
+   "commonTrap": "Trusting `==` on floats. This shows up constantly in numeric and ML code.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-BAS-008",
+   "revision": 1,
+   "subject": "python",
+   "topic": "basics",
+   "difficulty": "easy",
+   "prompt": "What does this print?",
+   "code": "a, b = 1, 2\na, b = b, a + b\nprint(a, b)",
+   "choices": [
+    "2 3",
+    "2 4",
+    "1 3",
+    "2 2"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "The whole right-hand side is evaluated before any assignment happens.",
+   "reasoning": "The right side becomes the tuple (2, 1 + 2) = (2, 3) using the old values, then it is unpacked into a and b. This is the Fibonacci step idiom.",
+   "commonTrap": "Reading it as two sequential assignments, which would give 2 4.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-BAS-009",
+   "revision": 1,
+   "subject": "python",
+   "topic": "basics",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "print(int(\"08\"), int(3.9), round(2.5))",
+   "choices": [
+    "8 3 2",
+    "8 4 3",
+    "8 3 3",
+    "ValueError"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "`int()` truncates floats toward zero; `round()` uses banker's rounding (ties go to even).",
+   "reasoning": "int('08') parses to 8. int(3.9) truncates to 3. round(2.5) rounds the tie to the even neighbour, 2.",
+   "commonTrap": "Expecting round(2.5) to be 3. round(3.5) is 4, but round(2.5) is 2.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-BAS-010",
+   "revision": 1,
+   "subject": "python",
+   "topic": "basics",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "print(1 < 3 > 2)",
+   "choices": [
+    "True",
+    "False",
+    "TypeError",
+    "1"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "Comparisons chain: `a < b > c` means `a < b and b > c`.",
+   "reasoning": "1 < 3 is True and 3 > 2 is True, so the chain is True. Chaining is also why `0 <= i < n` reads naturally.",
+   "commonTrap": "Evaluating left to right as (1 < 3) > 2, i.e. True > 2, which would be False.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-BAS-011",
+   "revision": 1,
+   "subject": "python",
+   "topic": "basics",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "print(True + True, bool(\"False\"))",
+   "choices": [
+    "2 True",
+    "2 False",
+    "True False",
+    "TypeError"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "bool is a subclass of int (True == 1). Any non-empty string is truthy.",
+   "reasoning": "True + True is 1 + 1 = 2. The string 'False' is non-empty, so bool('False') is True.",
+   "commonTrap": "Thinking bool() parses the text. Use `s == 'True'` or a lookup to parse strings.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-BAS-012",
+   "revision": 1,
+   "subject": "python",
+   "topic": "basics",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "print(0 or \"\" or [] or \"end\", 3 and 0 and 5)",
+   "choices": [
+    "end 0",
+    "True False",
+    "end 5",
+    "True 0"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "`or` returns the first truthy operand; `and` returns the first falsy one. Both return operands, not booleans.",
+   "reasoning": "The `or` chain skips 0, '' and [] and returns 'end'. The `and` chain stops at 0, the first falsy value, and returns it.",
+   "commonTrap": "Expecting `and`/`or` to produce True/False. They return one of the operands.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-BAS-013",
+   "revision": 1,
+   "subject": "python",
+   "topic": "basics",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "print(2 ** 3 ** 2)",
+   "choices": [
+    "64",
+    "512",
+    "729",
+    "36"
+   ],
+   "correctIndex": 1,
+   "keyIdea": "`**` is right-associative.",
+   "reasoning": "It parses as 2 ** (3 ** 2) = 2 ** 9 = 512, not (2 ** 3) ** 2 = 64.",
+   "commonTrap": "Assuming every operator groups left to right.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-BAS-014",
+   "revision": 1,
+   "subject": "python",
+   "topic": "basics",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "nums = [3, 8, 1, 9]\nif (n := len(nums)) > 3:\n    print(f\"{n} items\")",
+   "choices": [
+    "4 items",
+    "True items",
+    "3 items",
+    "SyntaxError"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "The walrus operator `:=` assigns and returns a value inside an expression (Python 3.8+).",
+   "reasoning": "`n := len(nums)` binds n to 4 and the expression evaluates to 4, so 4 > 3 is True and the f-string prints '4 items'.",
+   "commonTrap": "Forgetting the parentheses. Without them, n would be bound to the comparison result.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-BAS-015",
+   "revision": 1,
+   "subject": "python",
+   "topic": "basics",
+   "difficulty": "easy",
+   "prompt": "Why do scripts use `if __name__ == \"__main__\":`?",
+   "choices": [
+    "It makes the script run faster",
+    "The block runs only when the file is executed directly, not when it is imported",
+    "It is required for any Python file to run",
+    "It declares the main class of the module"
+   ],
+   "correctIndex": 1,
+   "keyIdea": "`__name__` is '__main__' for the executed script and the module name when imported.",
+   "reasoning": "Code under the guard (CLI parsing, training loops, tests) does not run when another module imports your functions. It also matters for multiprocessing on spawn-based platforms.",
+   "commonTrap": "Thinking it is mandatory boilerplate. Python runs top-level code either way.",
+   "monoChoices": false
+  },
+  {
+   "id": "PY-STR-001",
+   "revision": 1,
+   "subject": "python",
+   "topic": "strings",
+   "difficulty": "easy",
+   "prompt": "What does this print?",
+   "code": "s = \"python\"\nprint(s[1:4], s[-1], s[::-1])",
+   "choices": [
+    "yth n nohtyp",
+    "pyt n nohtyp",
+    "ytho n nohtyp",
+    "yth p python"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "Slices are `[start:stop:step]` with stop excluded; negative indices count from the end.",
+   "reasoning": "s[1:4] takes indices 1, 2, 3 → 'yth'. s[-1] is the last char 'n'. A step of -1 reverses the string.",
+   "commonTrap": "Including the stop index, which would give 'ytho'.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-STR-002",
+   "revision": 1,
+   "subject": "python",
+   "topic": "strings",
+   "difficulty": "easy",
+   "prompt": "What does this print?",
+   "code": "s = \"cat\"\ns[0] = \"b\"\nprint(s)",
+   "choices": [
+    "bat",
+    "cat",
+    "TypeError",
+    "IndexError"
+   ],
+   "correctIndex": 2,
+   "keyIdea": "Strings are immutable; you build new strings instead of editing in place.",
+   "reasoning": "Item assignment on a str raises TypeError. Write `s = 'b' + s[1:]` or use `s.replace(...)`.",
+   "commonTrap": "Treating a string like a list of characters you can mutate.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-STR-003",
+   "revision": 1,
+   "subject": "python",
+   "topic": "strings",
+   "difficulty": "easy",
+   "prompt": "What does this print?",
+   "code": "print(\"a,b,,c\".split(\",\"))",
+   "choices": [
+    "['a', 'b', '', 'c']",
+    "['a', 'b', 'c']",
+    "['a,b,,c']",
+    "('a', 'b', '', 'c')"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "`split(sep)` keeps empty fields between consecutive separators.",
+   "reasoning": "Between the two commas there is an empty string, so you get four items. Calling `split()` with no argument instead splits on runs of whitespace and drops empties.",
+   "commonTrap": "Assuming empty pieces are dropped. That only happens with the no-argument form.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-STR-004",
+   "revision": 1,
+   "subject": "python",
+   "topic": "strings",
+   "difficulty": "easy",
+   "prompt": "`words = ['a', 'b', 'c']`. Which expression produces `'a-b-c'`?",
+   "choices": [
+    "words.join(\"-\")",
+    "\"-\".join(words)",
+    "\"-\".split(words)",
+    "join(\"-\", words)"
+   ],
+   "correctIndex": 1,
+   "keyIdea": "`join` is a string method called on the separator, taking an iterable of strings.",
+   "reasoning": "\"-\".join(words) inserts \"-\" between each element. Lists have no join method.",
+   "commonTrap": "Calling join on the list, as in JavaScript's `arr.join('-')`.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-STR-005",
+   "revision": 1,
+   "subject": "python",
+   "topic": "strings",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "pi = 3.14159\nprint(f\"{pi:.2f}|{42:05d}|{'hi':>4}\")",
+   "choices": [
+    "3.14|00042|  hi",
+    "3.14|42000|hi  ",
+    "3.1|00042|  hi",
+    "3.14|42|hi"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "Format specs follow the colon: `.2f` decimals, `05d` zero-pad to width 5, `>4` right-align in width 4.",
+   "reasoning": "pi rounds to 3.14, 42 pads to 00042, and 'hi' is right-aligned in 4 characters, giving two leading spaces.",
+   "commonTrap": "Mixing up `<` (left-align) and `>` (right-align).",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-STR-006",
+   "revision": 1,
+   "subject": "python",
+   "topic": "strings",
+   "difficulty": "easy",
+   "prompt": "What does this print?",
+   "code": "print(\"Hello\".lower().count(\"l\"), \"hello\".find(\"z\"))",
+   "choices": [
+    "2 -1",
+    "2 ValueError",
+    "1 -1",
+    "2 None"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "`find` returns -1 when the substring is missing; `index` raises ValueError.",
+   "reasoning": "'hello' contains two 'l's. 'z' is not present, so find returns -1.",
+   "commonTrap": "Writing `if s.find(x):`, which is truthy for -1 and falsy when x is at position 0. Use `x in s`.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-STR-007",
+   "revision": 1,
+   "subject": "python",
+   "topic": "strings",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "print(repr(\"--a-b--\".strip(\"-\")))",
+   "choices": [
+    "'a-b'",
+    "'ab'",
+    "'a-b--'",
+    "'--a-b'"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "`strip(chars)` removes those characters from both ends only, never from the middle.",
+   "reasoning": "Leading and trailing '-' are removed; the '-' between a and b stays.",
+   "commonTrap": "Expecting strip to remove every occurrence. Use `replace` for that.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-STR-008",
+   "revision": 1,
+   "subject": "python",
+   "topic": "strings",
+   "difficulty": "easy",
+   "prompt": "What does this print?",
+   "code": "print(\"ab\" * 3, \"ba\" in \"abab\")",
+   "choices": [
+    "ababab True",
+    "ababab False",
+    "ab3 True",
+    "TypeError"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "`*` repeats a sequence; `in` tests for a substring.",
+   "reasoning": "'ab' * 3 is 'ababab'. 'ba' appears at index 1 of 'abab', so `in` is True.",
+   "commonTrap": "Thinking `in` on strings checks single characters only.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-STR-009",
+   "revision": 1,
+   "subject": "python",
+   "topic": "strings",
+   "difficulty": "medium",
+   "prompt": "Why is `''.join(parts)` preferred over `s += piece` inside a long loop?",
+   "choices": [
+    "join sorts the pieces first",
+    "Strings are immutable, so repeated += can copy the growing string each time (O(n²) worst case); join sizes the result once",
+    "+= is not allowed on strings",
+    "join automatically removes duplicates"
+   ],
+   "correctIndex": 1,
+   "keyIdea": "Building strings incrementally can be quadratic; collect pieces in a list and join once.",
+   "reasoning": "Each += may allocate a new string and copy everything so far. join computes the total length, allocates once and copies each piece once.",
+   "commonTrap": "Assuming CPython's occasional in-place += optimisation always applies. It is not guaranteed.",
+   "monoChoices": false
+  },
+  {
+   "id": "PY-STR-010",
+   "revision": 1,
+   "subject": "python",
+   "topic": "strings",
+   "difficulty": "easy",
+   "prompt": "What does this print?",
+   "code": "print(sorted(\"banana\"))",
+   "choices": [
+    "['a', 'a', 'a', 'b', 'n', 'n']",
+    "aaabnn",
+    "['b', 'a', 'n']",
+    "TypeError"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "`sorted()` accepts any iterable and always returns a new list.",
+   "reasoning": "Iterating a string yields characters, which sorted puts in order. Use `''.join(sorted(s))` to get a string back.",
+   "commonTrap": "Expecting sorted to return the same type it was given.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-STR-011",
+   "revision": 1,
+   "subject": "python",
+   "topic": "strings",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "print(\"{} {}\".format(*\"ab\"), \"%s-%d\" % (\"x\", 7))",
+   "choices": [
+    "a b x-7",
+    "ab x-7",
+    "{} {} x-7",
+    "a b %s-%d"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "`*` unpacks an iterable into positional arguments; `%` is the older printf-style formatting.",
+   "reasoning": "*'ab' passes 'a' and 'b' to format. The % operator fills %s with 'x' and %d with 7.",
+   "commonTrap": "Forgetting that a string is iterable and unpacks character by character.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-STR-012",
+   "revision": 1,
+   "subject": "python",
+   "topic": "strings",
+   "difficulty": "easy",
+   "prompt": "What does this print?",
+   "code": "s = \"Python\"\nt = s.replace(\"o\", \"0\")\nprint(t, s)",
+   "choices": [
+    "Pyth0n Python",
+    "Pyth0n Pyth0n",
+    "Python Python",
+    "None Python"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "String methods return new strings; the original is unchanged.",
+   "reasoning": "replace builds a new string bound to t. s still refers to 'Python'.",
+   "commonTrap": "Calling `s.replace(...)` without assigning the result and expecting s to change.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-STR-013",
+   "revision": 1,
+   "subject": "python",
+   "topic": "strings",
+   "difficulty": "easy",
+   "prompt": "What does this print?",
+   "code": "print(ord(\"a\"), chr(98))",
+   "choices": [
+    "97 b",
+    "65 B",
+    "1 b",
+    "97 98"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "`ord` maps a character to its Unicode code point; `chr` is the inverse.",
+   "reasoning": "'a' is code point 97, so 98 is 'b'. This is handy for `ord(c) - ord('a')` letter indexing in interview problems.",
+   "commonTrap": "Mixing up uppercase (65 = 'A') and lowercase (97 = 'a').",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-STR-014",
+   "revision": 1,
+   "subject": "python",
+   "topic": "strings",
+   "difficulty": "hard",
+   "prompt": "What does this print?",
+   "code": "print(\"abc\" < \"abd\", \"Z\" < \"a\", \"10\" < \"9\")",
+   "choices": [
+    "True True True",
+    "True False False",
+    "True True False",
+    "False True True"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "Strings compare lexicographically by code point, character by character.",
+   "reasoning": "'c' < 'd'. Uppercase letters (65–90) come before lowercase (97–122). '1' < '9' at the first character, so '10' < '9'.",
+   "commonTrap": "Expecting numeric comparison of digit strings. Convert with int() first.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-LST-001",
+   "revision": 1,
+   "subject": "python",
+   "topic": "lists",
+   "difficulty": "easy",
+   "prompt": "Which literal creates an empty list?",
+   "choices": [
+    "{}",
+    "[]",
+    "()",
+    "set()"
+   ],
+   "correctIndex": 1,
+   "keyIdea": "`[]` is an empty list, `()` an empty tuple, `{}` an empty dict.",
+   "reasoning": "Square brackets make lists. `list()` also works.",
+   "commonTrap": "Using `{}` and expecting a set or list. It is a dict.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-LST-002",
+   "revision": 1,
+   "subject": "python",
+   "topic": "lists",
+   "difficulty": "easy",
+   "prompt": "What does this print?",
+   "code": "a = [1, 2]\na.append([3, 4])\nb = [1, 2]\nb.extend([3, 4])\nprint(a, b)",
+   "choices": [
+    "[1, 2, [3, 4]] [1, 2, 3, 4]",
+    "[1, 2, 3, 4] [1, 2, 3, 4]",
+    "[1, 2, 3, 4] [1, 2, [3, 4]]",
+    "[1, 2, [3, 4]] [1, 2, [3, 4]]"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "`append` adds one object; `extend` adds each item of an iterable.",
+   "reasoning": "append puts the whole list [3, 4] in as a single element. extend iterates [3, 4] and adds 3 and 4.",
+   "commonTrap": "Using append to concatenate lists and ending up with a nested list.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-LST-003",
+   "revision": 1,
+   "subject": "python",
+   "topic": "lists",
+   "difficulty": "easy",
+   "prompt": "What does this print?",
+   "code": "nums = [10, 20, 30, 40, 50]\nprint(nums[1:3], nums[-2:], nums[::2])",
+   "choices": [
+    "[20, 30] [40, 50] [10, 30, 50]",
+    "[20, 30, 40] [40, 50] [10, 30, 50]",
+    "[10, 20] [50] [20, 40]",
+    "[20, 30] [50, 40] [10, 30, 50]"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "Slices exclude the stop index; `[-2:]` means the last two; `[::2]` takes every second item.",
+   "reasoning": "Indices 1 and 2 give [20, 30]. From index -2 to the end gives [40, 50]. Step 2 from the start gives 10, 30, 50.",
+   "commonTrap": "Including the stop index in the slice.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-LST-004",
+   "revision": 1,
+   "subject": "python",
+   "topic": "lists",
+   "difficulty": "easy",
+   "prompt": "What does this print?",
+   "code": "a = [1, 2, 3]\nb = a\nb.append(4)\nprint(a)",
+   "choices": [
+    "[1, 2, 3]",
+    "[1, 2, 3, 4]",
+    "[4, 1, 2, 3]",
+    "None"
+   ],
+   "correctIndex": 1,
+   "keyIdea": "Assignment binds another name to the same object; it never copies.",
+   "reasoning": "a and b refer to one list, so appending through b is visible through a. Use `a.copy()` or `a[:]` for a copy.",
+   "commonTrap": "Thinking `b = a` makes an independent copy.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-LST-005",
+   "revision": 1,
+   "subject": "python",
+   "topic": "lists",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "grid = [[0] * 3] * 2\ngrid[0][0] = 1\nprint(grid)",
+   "choices": [
+    "[[1, 0, 0], [0, 0, 0]]",
+    "[[1, 0, 0], [1, 0, 0]]",
+    "[[1, 1, 1], [0, 0, 0]]",
+    "TypeError"
+   ],
+   "correctIndex": 1,
+   "keyIdea": "Multiplying a list of lists repeats references to the same inner list.",
+   "reasoning": "`* 2` puts the same inner list object in both rows, so a change through one row shows in both. Build grids with `[[0] * 3 for _ in range(2)]`.",
+   "commonTrap": "This is the classic 2D-grid bug in DP and matrix interview problems.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-LST-006",
+   "revision": 1,
+   "subject": "python",
+   "topic": "lists",
+   "difficulty": "easy",
+   "prompt": "What does this print?",
+   "code": "nums = [3, 1, 2]\nresult = nums.sort()\nprint(result, nums)",
+   "choices": [
+    "[1, 2, 3] [1, 2, 3]",
+    "None [1, 2, 3]",
+    "[1, 2, 3] [3, 1, 2]",
+    "None [3, 1, 2]"
+   ],
+   "correctIndex": 1,
+   "keyIdea": "`list.sort()` sorts in place and returns None; `sorted()` returns a new list.",
+   "reasoning": "Methods that mutate in place return None by convention, so result is None while nums is now sorted.",
+   "commonTrap": "Writing `nums = nums.sort()` and losing the list.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-LST-007",
+   "revision": 1,
+   "subject": "python",
+   "topic": "lists",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "a = [[1, 2], [3]]\nb = a.copy()\nb[0].append(99)\nb.append([4])\nprint(a)",
+   "choices": [
+    "[[1, 2], [3]]",
+    "[[1, 2, 99], [3]]",
+    "[[1, 2, 99], [3], [4]]",
+    "[[1, 2], [3], [4]]"
+   ],
+   "correctIndex": 1,
+   "keyIdea": "A shallow copy duplicates the outer list but shares the inner objects.",
+   "reasoning": "b is a new outer list, so appending [4] to b does not touch a. b[0] is the same inner list as a[0], so 99 shows up in a. Use `copy.deepcopy` for full independence.",
+   "commonTrap": "Assuming `.copy()` or `[:]` copies nested structures.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-LST-008",
+   "revision": 1,
+   "subject": "python",
+   "topic": "lists",
+   "difficulty": "easy",
+   "prompt": "What does this print?",
+   "code": "t = (5)\nu = (5,)\nprint(type(t).__name__, type(u).__name__)",
+   "choices": [
+    "tuple tuple",
+    "int tuple",
+    "int int",
+    "tuple int"
+   ],
+   "correctIndex": 1,
+   "keyIdea": "The comma makes a tuple, not the parentheses.",
+   "reasoning": "(5) is just 5 in grouping parentheses. (5,) is a one-element tuple. `t = 5,` would also be a tuple.",
+   "commonTrap": "Forgetting the trailing comma for single-element tuples.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-LST-009",
+   "revision": 1,
+   "subject": "python",
+   "topic": "lists",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "first, *mid, last = [1, 2, 3, 4, 5]\nprint(first, mid, last)",
+   "choices": [
+    "1 [2, 3, 4] 5",
+    "1 (2, 3, 4) 5",
+    "1 2 5",
+    "ValueError"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "Starred assignment collects the leftover items into a list.",
+   "reasoning": "first takes 1, last takes 5, and *mid gathers everything in between as a list.",
+   "commonTrap": "Expecting the starred name to be a tuple. It is always a list.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-LST-010",
+   "revision": 1,
+   "subject": "python",
+   "topic": "lists",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "nums = [2, 4, 6, 7]\nfor n in nums:\n    if n % 2 == 0:\n        nums.remove(n)\nprint(nums)",
+   "choices": [
+    "[7]",
+    "[4, 7]",
+    "[2, 4, 6, 7]",
+    "RuntimeError"
+   ],
+   "correctIndex": 1,
+   "keyIdea": "Removing items from a list while iterating over it skips elements.",
+   "reasoning": "The loop uses an index. Removing 2 shifts 4 into index 0, but the loop moves on to index 1 (now 6). 6 is removed and the loop ends, leaving [4, 7]. Filter into a new list instead.",
+   "commonTrap": "Expecting a RuntimeError like dicts raise. Lists fail silently with wrong results.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-LST-011",
+   "revision": 1,
+   "subject": "python",
+   "topic": "lists",
+   "difficulty": "easy",
+   "prompt": "What does this print?",
+   "code": "s = [1, 2, 3]\ns.pop()\ns.insert(0, 9)\nprint(s)",
+   "choices": [
+    "[9, 1, 2]",
+    "[9, 2, 3]",
+    "[1, 2, 9]",
+    "[9, 1, 2, 3]"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "`pop()` removes the last item by default; `insert(i, x)` places x before index i.",
+   "reasoning": "pop removes 3, leaving [1, 2]. insert(0, 9) puts 9 at the front.",
+   "commonTrap": "Thinking pop() removes the first item. That is pop(0).",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-LST-012",
+   "revision": 1,
+   "subject": "python",
+   "topic": "lists",
+   "difficulty": "hard",
+   "prompt": "What does this print?",
+   "code": "s = [1, 2, 3]\nprint(s, s.pop())",
+   "choices": [
+    "[1, 2, 3] 3",
+    "[1, 2] 3",
+    "[1, 2] [3]",
+    "[1, 2, 3] [1, 2]"
+   ],
+   "correctIndex": 1,
+   "keyIdea": "All arguments are evaluated before the function runs, and a list argument is a reference.",
+   "reasoning": "print receives a reference to s, then s.pop() runs and removes 3. When print finally formats s, the list is already [1, 2].",
+   "commonTrap": "Assuming the first argument is snapshotted before the second is evaluated.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-LST-013",
+   "revision": 1,
+   "subject": "python",
+   "topic": "lists",
+   "difficulty": "easy",
+   "prompt": "What does this print?",
+   "code": "print([1, 2] * 2, [1, 2] + [3])",
+   "choices": [
+    "[1, 2, 1, 2] [1, 2, 3]",
+    "[2, 4] [1, 2, 3]",
+    "[2, 4] [4, 5]",
+    "[[1, 2], [1, 2]] [1, 2, [3]]"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "On lists, `*` repeats and `+` concatenates. They are not element-wise math.",
+   "reasoning": "Sequence operators work on the list as a whole. Element-wise arithmetic needs a comprehension or NumPy.",
+   "commonTrap": "Bringing NumPy intuition to plain lists.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-LST-014",
+   "revision": 1,
+   "subject": "python",
+   "topic": "lists",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "t = ([1], 2)\nt[0].append(3)\nprint(t)",
+   "choices": [
+    "([1], 2)",
+    "([1, 3], 2)",
+    "TypeError",
+    "([1], 2, 3)"
+   ],
+   "correctIndex": 1,
+   "keyIdea": "A tuple cannot change which objects it holds, but those objects can be mutable.",
+   "reasoning": "t[0] is a list, and lists can be appended to. The tuple still holds the same list object, so nothing about the tuple itself changed.",
+   "commonTrap": "Believing a tuple makes everything inside it immutable. It also stays unhashable if it contains a list.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-LST-015",
+   "revision": 1,
+   "subject": "python",
+   "topic": "lists",
+   "difficulty": "easy",
+   "prompt": "What does this print?",
+   "code": "nums = [5, 1, 4]\nprint(sorted(nums, reverse=True), max(nums), nums.index(4))",
+   "choices": [
+    "[5, 4, 1] 5 2",
+    "[1, 4, 5] 5 2",
+    "[5, 4, 1] 5 4",
+    "[5, 4, 1] 4 1"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "`sorted(..., reverse=True)` sorts descending; `index(x)` returns the position of x.",
+   "reasoning": "Descending order is [5, 4, 1]. max is 5. The value 4 sits at index 2 in the original list.",
+   "commonTrap": "Confusing `index(x)`, which searches for a value, with `nums[x]`, which reads a position.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-DCT-001",
+   "revision": 1,
+   "subject": "python",
+   "topic": "dicts",
+   "difficulty": "easy",
+   "prompt": "Which expression creates an empty set?",
+   "choices": [
+    "{}",
+    "set()",
+    "[]",
+    "{,}"
+   ],
+   "correctIndex": 1,
+   "keyIdea": "`{}` is an empty dict; an empty set needs `set()`.",
+   "reasoning": "Braces with key: value pairs or nothing make dicts. Non-empty set literals like {1, 2} work, but there is no empty-set literal.",
+   "commonTrap": "Writing `seen = {}` and later calling `seen.add(x)`, which fails on a dict.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-DCT-002",
+   "revision": 1,
+   "subject": "python",
+   "topic": "dicts",
+   "difficulty": "easy",
+   "prompt": "What does this print?",
+   "code": "d = {\"a\": 1}\nprint(d.get(\"b\"), d.get(\"b\", 0))",
+   "choices": [
+    "None 0",
+    "KeyError",
+    "0 0",
+    "None None"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "`dict.get(key, default)` returns the default (None if omitted) instead of raising.",
+   "reasoning": "'b' is missing, so the first call returns None and the second returns the given default 0.",
+   "commonTrap": "Using `d[key]` for keys that may be missing.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-DCT-003",
+   "revision": 1,
+   "subject": "python",
+   "topic": "dicts",
+   "difficulty": "easy",
+   "prompt": "What does this print?",
+   "code": "d = {\"a\": 1}\nprint(d[\"b\"])",
+   "choices": [
+    "None",
+    "KeyError",
+    "0",
+    "IndexError"
+   ],
+   "correctIndex": 1,
+   "keyIdea": "Square-bracket lookup of a missing key raises KeyError.",
+   "reasoning": "Use `in`, `.get()`, or a defaultdict when a key may be absent.",
+   "commonTrap": "Expecting None, as JavaScript's undefined would suggest.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-DCT-004",
+   "revision": 1,
+   "subject": "python",
+   "topic": "dicts",
+   "difficulty": "easy",
+   "prompt": "What does this print?",
+   "code": "counts = {}\nfor w in \"a b a c a\".split():\n    counts[w] = counts.get(w, 0) + 1\nprint(counts)",
+   "choices": [
+    "{'a': 3, 'b': 1, 'c': 1}",
+    "{'a': 1, 'b': 1, 'c': 1}",
+    "{'a': 3, 'c': 1, 'b': 1}",
+    "KeyError"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "`d[k] = d.get(k, 0) + 1` is the plain-dict counting idiom; dicts keep insertion order.",
+   "reasoning": "Each word starts from 0 via get and increments. Keys appear in the order first inserted: a, b, c. `collections.Counter` does the same in one call.",
+   "commonTrap": "Writing `counts[w] += 1` without initialising, which raises KeyError.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-DCT-005",
+   "revision": 1,
+   "subject": "python",
+   "topic": "dicts",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "from collections import defaultdict\ngroups = defaultdict(list)\nfor word in [\"apple\", \"avocado\", \"banana\"]:\n    groups[word[0]].append(word)\nprint(dict(groups))",
+   "choices": [
+    "{'a': ['apple', 'avocado'], 'b': ['banana']}",
+    "{'a': 'avocado', 'b': 'banana'}",
+    "KeyError",
+    "{'apple': 'a', 'avocado': 'a', 'banana': 'b'}"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "`defaultdict(factory)` creates a missing key's value by calling the factory.",
+   "reasoning": "The first access to groups['a'] creates an empty list, then append adds to it. This is the standard grouping idiom (e.g. group anagrams).",
+   "commonTrap": "Passing `list()` (an instance) instead of `list` (the factory).",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-DCT-006",
+   "revision": 1,
+   "subject": "python",
+   "topic": "dicts",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "d = {[1, 2]: \"x\"}\nprint(d)",
+   "choices": [
+    "{[1, 2]: 'x'}",
+    "{(1, 2): 'x'}",
+    "TypeError",
+    "KeyError"
+   ],
+   "correctIndex": 2,
+   "keyIdea": "Dict keys and set elements must be hashable; mutable built-ins like lists are not.",
+   "reasoning": "A list's hash could change as it mutates, which would break lookups, so lists are unhashable. Use a tuple `(1, 2)` as the key.",
+   "commonTrap": "Trying to memoise on a list argument. Convert it to a tuple first.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-DCT-007",
+   "revision": 1,
+   "subject": "python",
+   "topic": "dicts",
+   "difficulty": "easy",
+   "prompt": "What does this print?",
+   "code": "d = {\"x\": 1, \"y\": 2}\nfor k, v in d.items():\n    print(k, v)",
+   "choices": [
+    "x 1\ny 2",
+    "x\ny",
+    "('x', 1)\n('y', 2)",
+    "1\n2"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "`.items()` yields (key, value) pairs that unpack in the for loop.",
+   "reasoning": "Each pair is unpacked into k and v. Looping over `d` alone yields only keys.",
+   "commonTrap": "Writing `for k, v in d:`, which tries to unpack each key string.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-DCT-008",
+   "revision": 1,
+   "subject": "python",
+   "topic": "dicts",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "print({n: n * n for n in range(4) if n % 2})",
+   "choices": [
+    "{1: 1, 3: 9}",
+    "{0: 0, 2: 4}",
+    "{0: 0, 1: 1, 2: 4, 3: 9}",
+    "[1, 9]"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "Dict comprehensions use `{key: value for ... if ...}`.",
+   "reasoning": "n % 2 is truthy for odd n, so only 1 and 3 are kept and mapped to their squares.",
+   "commonTrap": "Reading `if n % 2` as 'if even'. A non-zero remainder means odd.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-DCT-009",
+   "revision": 1,
+   "subject": "python",
+   "topic": "dicts",
+   "difficulty": "easy",
+   "prompt": "What does this print?",
+   "code": "a = {1, 2, 3}\nb = {2, 3, 4}\nprint(a & b, a | b, a - b)",
+   "choices": [
+    "{2, 3} {1, 2, 3, 4} {1}",
+    "{1, 4} {1, 2, 3, 4} {1}",
+    "{2, 3} {1, 2, 3, 4} {4}",
+    "TypeError"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "`&` intersection, `|` union, `-` difference, `^` symmetric difference.",
+   "reasoning": "Common elements are 2 and 3. Union has all four. a - b keeps what is only in a: 1.",
+   "commonTrap": "Mixing up `a - b` and `b - a`.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-DCT-010",
+   "revision": 1,
+   "subject": "python",
+   "topic": "dicts",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "d = {\"a\": 1, \"a\": 2, \"b\": 3}\nprint(len(d), d[\"a\"])",
+   "choices": [
+    "3 1",
+    "2 2",
+    "2 1",
+    "SyntaxError"
+   ],
+   "correctIndex": 1,
+   "keyIdea": "Repeated keys in a dict literal are allowed; the last value wins.",
+   "reasoning": "The second 'a' overwrites the first, so the dict has two keys and d['a'] is 2.",
+   "commonTrap": "Expecting an error on duplicate keys.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-DCT-011",
+   "revision": 1,
+   "subject": "python",
+   "topic": "dicts",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "a = {\"x\": 1, \"y\": 2}\nb = {\"y\": 20, \"z\": 30}\nprint(a | b)",
+   "choices": [
+    "{'x': 1, 'y': 20, 'z': 30}",
+    "{'x': 1, 'y': 2, 'z': 30}",
+    "TypeError",
+    "{'y': 2}"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "`a | b` (Python 3.9+) merges dicts; on conflicts the right-hand value wins.",
+   "reasoning": "y appears in both and b's value 20 is kept. `{**a, **b}` gives the same result on older versions.",
+   "commonTrap": "Thinking the left side wins on conflicts.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-DCT-012",
+   "revision": 1,
+   "subject": "python",
+   "topic": "dicts",
+   "difficulty": "hard",
+   "prompt": "What does this print?",
+   "code": "d = {\"a\": 1, \"b\": 2}\nfor k in d:\n    d[\"c\"] = 3\nprint(d)",
+   "choices": [
+    "{'a': 1, 'b': 2, 'c': 3}",
+    "RuntimeError",
+    "{'a': 1, 'b': 2}",
+    "Infinite loop"
+   ],
+   "correctIndex": 1,
+   "keyIdea": "Adding or removing dict keys while iterating the dict raises RuntimeError.",
+   "reasoning": "Python detects that the dict changed size during iteration. Iterate over `list(d)` if you must modify it.",
+   "commonTrap": "Assuming it behaves like the silent list case. Dicts fail loudly.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-DCT-013",
+   "revision": 1,
+   "subject": "python",
+   "topic": "dicts",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "from collections import Counter\nc = Counter(\"mississippi\")\nprint(c.most_common(2))",
+   "choices": [
+    "[('i', 4), ('s', 4)]",
+    "[('s', 4), ('i', 4)]",
+    "[('m', 1), ('i', 4)]",
+    "{'i': 4, 's': 4}"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "`Counter.most_common(k)` returns (item, count) pairs sorted by count; ties keep first-seen order.",
+   "reasoning": "i and s both appear 4 times. 'i' is encountered before 's' in the string, so it is listed first.",
+   "commonTrap": "Expecting a dict back. most_common returns a list of tuples.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-DCT-014",
+   "revision": 1,
+   "subject": "python",
+   "topic": "dicts",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "d = {}\nd.setdefault(\"k\", []).append(1)\nd.setdefault(\"k\", []).append(2)\nprint(d)",
+   "choices": [
+    "{'k': [1, 2]}",
+    "{'k': [2]}",
+    "{'k': [1]}",
+    "KeyError"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "`setdefault(k, v)` inserts v only if k is missing, then returns the stored value.",
+   "reasoning": "The first call stores a new list and returns it. The second call finds 'k' and returns that same list, so both appends land in it.",
+   "commonTrap": "Thinking setdefault overwrites an existing value.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-DCT-015",
+   "revision": 1,
+   "subject": "python",
+   "topic": "dicts",
+   "difficulty": "easy",
+   "prompt": "Since Python 3.7, what does the language guarantee about iterating a dict?",
+   "choices": [
+    "Keys come out sorted",
+    "Keys come out in insertion order",
+    "Order is random on every run",
+    "Order is guaranteed only for string keys"
+   ],
+   "correctIndex": 1,
+   "keyIdea": "Dicts preserve insertion order as a language guarantee from 3.7.",
+   "reasoning": "Updating an existing key's value keeps its position. Deleting and re-adding a key moves it to the end.",
+   "commonTrap": "Assuming sorted order. Use `sorted(d)` when you need that.",
+   "monoChoices": false
+  },
+  {
+   "id": "PY-DCT-016",
+   "revision": 1,
+   "subject": "python",
+   "topic": "dicts",
+   "difficulty": "hard",
+   "prompt": "What does this print?",
+   "code": "print({1: \"a\", True: \"b\", 1.0: \"c\"})",
+   "choices": [
+    "{1: 'c'}",
+    "{1: 'a', True: 'b', 1.0: 'c'}",
+    "{True: 'c'}",
+    "{1.0: 'c'}"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "Keys that compare equal and hash equal are the same key: 1 == True == 1.0.",
+   "reasoning": "All three collapse into one entry. The key object stays the first one inserted (1); the value is the last one assigned ('c').",
+   "commonTrap": "Treating True and 1 as distinct keys.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-CMP-001",
+   "revision": 1,
+   "subject": "python",
+   "topic": "comprehensions",
+   "difficulty": "easy",
+   "prompt": "What does this print?",
+   "code": "print([x * 2 for x in range(5) if x % 2 == 0])",
+   "choices": [
+    "[0, 4, 8]",
+    "[0, 2, 4, 6, 8]",
+    "[2, 6]",
+    "[0, 2, 4]"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "`[expr for x in iterable if cond]` filters first, then transforms.",
+   "reasoning": "range(5) gives 0–4. The evens are 0, 2, 4; doubling them gives 0, 4, 8.",
+   "commonTrap": "Applying the condition to the transformed value instead of x.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-CMP-002",
+   "revision": 1,
+   "subject": "python",
+   "topic": "comprehensions",
+   "difficulty": "easy",
+   "prompt": "What does this print?",
+   "code": "for i, ch in enumerate(\"ab\", start=1):\n    print(i, ch)",
+   "choices": [
+    "1 a\n2 b",
+    "0 a\n1 b",
+    "a 1\nb 2",
+    "(1, 'a')\n(2, 'b')"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "`enumerate(it, start=k)` yields (index, item) pairs, counting from k.",
+   "reasoning": "With start=1, the indices are 1 and 2. Prefer enumerate over `range(len(...))`.",
+   "commonTrap": "Forgetting that the index comes first in each pair.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-CMP-003",
+   "revision": 1,
+   "subject": "python",
+   "topic": "comprehensions",
+   "difficulty": "easy",
+   "prompt": "What does this print?",
+   "code": "print(list(zip([1, 2, 3], \"ab\")))",
+   "choices": [
+    "[(1, 'a'), (2, 'b')]",
+    "[(1, 'a'), (2, 'b'), (3, None)]",
+    "ValueError",
+    "[1, 'a', 2, 'b']"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "`zip` pairs items and stops at the shortest input.",
+   "reasoning": "'ab' has only two characters, so 3 is dropped silently. Use `zip(..., strict=True)` (3.10+) to raise instead, or `itertools.zip_longest` to pad.",
+   "commonTrap": "Assuming zip pads with None.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-CMP-004",
+   "revision": 1,
+   "subject": "python",
+   "topic": "comprehensions",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "matrix = [[1, 2], [3, 4]]\nprint([x for row in matrix for x in row])",
+   "choices": [
+    "[1, 2, 3, 4]",
+    "[[1, 2], [3, 4]]",
+    "[1, 3, 2, 4]",
+    "NameError"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "In a nested comprehension, the `for` clauses read in the same order as nested loops.",
+   "reasoning": "It means `for row in matrix:` then `for x in row:`, so it flattens row by row.",
+   "commonTrap": "Writing the clauses in reverse (`for x in row for row in matrix`), which raises NameError.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-CMP-005",
+   "revision": 1,
+   "subject": "python",
+   "topic": "comprehensions",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "matrix = [[1, 2], [3, 4]]\nprint([[row[i] for row in matrix] for i in range(2)])",
+   "choices": [
+    "[[1, 3], [2, 4]]",
+    "[[1, 2], [3, 4]]",
+    "[1, 3, 2, 4]",
+    "[[1, 2], [1, 2]]"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "An outer comprehension over column i with an inner one over rows builds the transpose.",
+   "reasoning": "For i = 0 it collects the first item of each row, [1, 3]; for i = 1, [2, 4]. `list(map(list, zip(*matrix)))` does the same.",
+   "commonTrap": "Confusing which comprehension is the outer loop.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-CMP-006",
+   "revision": 1,
+   "subject": "python",
+   "topic": "comprehensions",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "nums = [1, 2, 3, 4]\nprint(list(map(lambda n: n ** 2, filter(lambda n: n % 2 == 0, nums))))",
+   "choices": [
+    "[4, 16]",
+    "[1, 9]",
+    "[1, 4, 9, 16]",
+    "[2, 4]"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "`filter` keeps items where the function is truthy; `map` transforms each item.",
+   "reasoning": "filter keeps 2 and 4; map squares them. The comprehension `[n**2 for n in nums if n % 2 == 0]` is usually more readable.",
+   "commonTrap": "Forgetting map and filter are lazy iterators in Python 3, so you need list() to see values.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-CMP-007",
+   "revision": 1,
+   "subject": "python",
+   "topic": "comprehensions",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "squares = (n * n for n in range(3))\nprint(sum(squares), sum(squares))",
+   "choices": [
+    "5 5",
+    "5 0",
+    "0 5",
+    "TypeError"
+   ],
+   "correctIndex": 1,
+   "keyIdea": "A generator can be consumed only once.",
+   "reasoning": "The first sum uses up 0, 1, 4 → 5. The generator is then exhausted, so the second sum sees nothing and returns 0.",
+   "commonTrap": "Reusing a generator as if it were a list.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-CMP-008",
+   "revision": 1,
+   "subject": "python",
+   "topic": "comprehensions",
+   "difficulty": "easy",
+   "prompt": "What does this print?",
+   "code": "print(list(range(10, 0, -3)))",
+   "choices": [
+    "[10, 7, 4, 1]",
+    "[10, 7, 4, 1, -2]",
+    "[10, 7, 4]",
+    "[]"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "`range(start, stop, step)` excludes stop and can count down with a negative step.",
+   "reasoning": "Start at 10 and subtract 3 while staying above 0: 10, 7, 4, 1.",
+   "commonTrap": "Writing `range(10, 0)` without a negative step, which is empty.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-CMP-009",
+   "revision": 1,
+   "subject": "python",
+   "topic": "comprehensions",
+   "difficulty": "easy",
+   "prompt": "Which expression maps each word in `words` to its length?",
+   "choices": [
+    "{w: len(w) for w in words}",
+    "[w: len(w) for w in words]",
+    "{len(w) for w in words}",
+    "dict(w, len(w) for w in words)"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "Braces with `key: value` make a dict comprehension; braces with one expression make a set.",
+   "reasoning": "Option A builds {'cat': 3, ...}. Option C is a set of lengths. Option B is a syntax error.",
+   "commonTrap": "Confusing set comprehensions and dict comprehensions.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-CMP-010",
+   "revision": 1,
+   "subject": "python",
+   "topic": "comprehensions",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "print([\"even\" if n % 2 == 0 else \"odd\" for n in range(3)])",
+   "choices": [
+    "['even', 'odd', 'even']",
+    "['even', 'even']",
+    "['odd', 'even', 'odd']",
+    "SyntaxError"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "An if/else that transforms goes before `for`; an `if` that filters goes after it.",
+   "reasoning": "`A if cond else B` is a conditional expression applied to every item, so all three values appear.",
+   "commonTrap": "Writing `[x for x in xs if c else y]`, which is a syntax error.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-CMP-011",
+   "revision": 1,
+   "subject": "python",
+   "topic": "comprehensions",
+   "difficulty": "hard",
+   "prompt": "What does this print?",
+   "code": "x = 10\nresult = [x for x in range(3)]\nprint(x)",
+   "choices": [
+    "10",
+    "2",
+    "3",
+    "NameError"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "In Python 3, a comprehension's loop variable is local to the comprehension.",
+   "reasoning": "The x inside the brackets does not leak, so the outer x stays 10. A plain for loop would rebind x.",
+   "commonTrap": "Carrying over Python 2 behaviour, where list comprehension variables leaked.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-CMP-012",
+   "revision": 1,
+   "subject": "python",
+   "topic": "comprehensions",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "print(all([]), any([]), any([0, \"\", None, 1]))",
+   "choices": [
+    "True False True",
+    "False False True",
+    "True True True",
+    "False False False"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "`all` of an empty iterable is True; `any` of an empty iterable is False.",
+   "reasoning": "all asks 'is there no falsy element?', which holds for empty input. any asks 'is there a truthy element?' The last list contains 1.",
+   "commonTrap": "Expecting all([]) to be False, which leads to edge-case bugs in validation code.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-CMP-013",
+   "revision": 1,
+   "subject": "python",
+   "topic": "comprehensions",
+   "difficulty": "hard",
+   "prompt": "What does this print?",
+   "code": "pairs = [(1, \"a\"), (2, \"b\")]\nnums, letters = zip(*pairs)\nprint(nums, letters)",
+   "choices": [
+    "(1, 2) ('a', 'b')",
+    "[1, 2] ['a', 'b']",
+    "(1, 'a') (2, 'b')",
+    "ValueError"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "`zip(*pairs)` unzips a list of pairs into tuples by position.",
+   "reasoning": "*pairs passes each pair as a separate argument, so zip groups the first items together and the second items together.",
+   "commonTrap": "Expecting lists back. zip yields tuples.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-CMP-014",
+   "revision": 1,
+   "subject": "python",
+   "topic": "comprehensions",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "words = [\"bb\", \"a\", \"ccc\", \"dd\"]\nprint(sorted(words, key=len))",
+   "choices": [
+    "['a', 'bb', 'dd', 'ccc']",
+    "['a', 'dd', 'bb', 'ccc']",
+    "['a', 'bb', 'ccc', 'dd']",
+    "['ccc', 'bb', 'dd', 'a']"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "Python's sort is stable: items with equal keys keep their original order.",
+   "reasoning": "'bb' and 'dd' both have length 2 and 'bb' came first, so it stays first.",
+   "commonTrap": "Expecting ties to be broken alphabetically automatically.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-CMP-015",
+   "revision": 1,
+   "subject": "python",
+   "topic": "comprehensions",
+   "difficulty": "hard",
+   "prompt": "What does this print?",
+   "code": "people = [(\"bob\", 25), (\"amy\", 30), (\"cat\", 25)]\nprint(sorted(people, key=lambda p: (-p[1], p[0])))",
+   "choices": [
+    "[('amy', 30), ('bob', 25), ('cat', 25)]",
+    "[('bob', 25), ('cat', 25), ('amy', 30)]",
+    "[('amy', 30), ('cat', 25), ('bob', 25)]",
+    "TypeError"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "A tuple key sorts by several fields; negate a number to sort that field descending.",
+   "reasoning": "Age is sorted descending via -age, then name ascending breaks ties. amy (30) comes first, then bob and cat.",
+   "commonTrap": "Using reverse=True, which would also reverse the name order.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-FUN-001",
+   "revision": 1,
+   "subject": "python",
+   "topic": "functions",
+   "difficulty": "easy",
+   "prompt": "What does this print?",
+   "code": "def f():\n    pass\nprint(f())",
+   "choices": [
+    "None",
+    "0",
+    "''",
+    "Nothing is printed"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "A function without a return statement returns None.",
+   "reasoning": "Falling off the end of a function returns None, and print shows it.",
+   "commonTrap": "Forgetting `return` in a helper and getting None downstream.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-FUN-002",
+   "revision": 1,
+   "subject": "python",
+   "topic": "functions",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "def add(item, bucket=[]):\n    bucket.append(item)\n    return bucket\nprint(add(1), add(2))",
+   "choices": [
+    "[1] [2]",
+    "[1, 2] [1, 2]",
+    "[1] [1, 2]",
+    "TypeError"
+   ],
+   "correctIndex": 1,
+   "keyIdea": "Default values are evaluated once, when the function is defined, so a mutable default is shared.",
+   "reasoning": "Both calls append to the same list object. Both returned references point to [1, 2]. Use `bucket=None` and create the list inside.",
+   "commonTrap": "The most famous Python interview gotcha.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-FUN-003",
+   "revision": 1,
+   "subject": "python",
+   "topic": "functions",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "def f(a, *args, **kwargs):\n    print(a, args, kwargs)\nf(1, 2, 3, x=4)",
+   "choices": [
+    "1 (2, 3) {'x': 4}",
+    "1 [2, 3] {'x': 4}",
+    "(1, 2, 3) {'x': 4}",
+    "TypeError"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "`*args` collects extra positional arguments into a tuple; `**kwargs` collects extra keyword arguments into a dict.",
+   "reasoning": "1 binds to a, 2 and 3 go into args as a tuple, and x=4 goes into kwargs.",
+   "commonTrap": "Expecting args to be a list.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-FUN-004",
+   "revision": 1,
+   "subject": "python",
+   "topic": "functions",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "count = 0\ndef inc():\n    count += 1\ninc()\nprint(count)",
+   "choices": [
+    "1",
+    "0",
+    "UnboundLocalError",
+    "NameError"
+   ],
+   "correctIndex": 2,
+   "keyIdea": "Assigning to a name anywhere in a function makes it local for the whole function.",
+   "reasoning": "`count += 1` assigns, so count is local to inc, and it is read before it has a value. Declare `global count`, or better, return the new value.",
+   "commonTrap": "Expecting the global to be read and updated automatically.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-FUN-005",
+   "revision": 1,
+   "subject": "python",
+   "topic": "functions",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "def make_counter():\n    n = 0\n    def inc():\n        nonlocal n\n        n += 1\n        return n\n    return inc\nc = make_counter()\nc(); c()\nprint(c())",
+   "choices": [
+    "1",
+    "3",
+    "0",
+    "UnboundLocalError"
+   ],
+   "correctIndex": 1,
+   "keyIdea": "A closure keeps the enclosing function's variables alive; `nonlocal` lets it rebind them.",
+   "reasoning": "Each call increments the same n captured from make_counter, so the third call returns 3.",
+   "commonTrap": "Thinking n resets to 0 on every call. It resets only when make_counter is called again.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-FUN-006",
+   "revision": 1,
+   "subject": "python",
+   "topic": "functions",
+   "difficulty": "hard",
+   "prompt": "What does this print?",
+   "code": "funcs = [lambda: i for i in range(3)]\nprint([f() for f in funcs])",
+   "choices": [
+    "[0, 1, 2]",
+    "[2, 2, 2]",
+    "[3, 3, 3]",
+    "NameError"
+   ],
+   "correctIndex": 1,
+   "keyIdea": "Closures look up variables when called (late binding), not when defined.",
+   "reasoning": "All three lambdas refer to the same i, which is 2 when the loop finishes. Capture the current value with `lambda i=i: i`.",
+   "commonTrap": "Expecting each lambda to remember the i from its own iteration.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-FUN-007",
+   "revision": 1,
+   "subject": "python",
+   "topic": "functions",
+   "difficulty": "easy",
+   "prompt": "What does this print?",
+   "code": "def greet(name, greeting=\"Hi\"):\n    return f\"{greeting}, {name}\"\nprint(greet(greeting=\"Yo\", name=\"Sam\"))",
+   "choices": [
+    "Yo, Sam",
+    "Sam, Yo",
+    "Hi, Sam",
+    "TypeError"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "Keyword arguments match parameters by name, so their order does not matter.",
+   "reasoning": "greeting gets 'Yo' and name gets 'Sam' regardless of the order they are passed in.",
+   "commonTrap": "Thinking keyword arguments must follow the parameter order.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-FUN-008",
+   "revision": 1,
+   "subject": "python",
+   "topic": "functions",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "def area(w, h):\n    return w * h\ndims = {\"h\": 3, \"w\": 4}\nprint(area(*[2, 5]), area(**dims))",
+   "choices": [
+    "10 12",
+    "10 TypeError",
+    "7 7",
+    "[2, 5] 12"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "At a call site, `*` unpacks a sequence into positional arguments and `**` unpacks a dict into keyword arguments.",
+   "reasoning": "area(2, 5) is 10. area(h=3, w=4) is 12; keys are matched by name, so dict order does not matter.",
+   "commonTrap": "Mixing up `*` and `**` when forwarding arguments.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-FUN-009",
+   "revision": 1,
+   "subject": "python",
+   "topic": "functions",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "def f(a, *, b):\n    return a + b\nprint(f(1, 2))",
+   "choices": [
+    "3",
+    "TypeError",
+    "SyntaxError",
+    "(1, 2)"
+   ],
+   "correctIndex": 1,
+   "keyIdea": "Parameters after a bare `*` are keyword-only.",
+   "reasoning": "b must be passed as `b=2`. Passing it positionally raises TypeError. Libraries use this to keep call sites readable.",
+   "commonTrap": "Thinking `*` is a parameter that collects arguments. A bare star collects nothing.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-FUN-010",
+   "revision": 1,
+   "subject": "python",
+   "topic": "functions",
+   "difficulty": "easy",
+   "prompt": "What does this print?",
+   "code": "x = \"global\"\ndef outer():\n    x = \"enclosing\"\n    def inner():\n        return x\n    return inner()\nprint(outer())",
+   "choices": [
+    "enclosing",
+    "global",
+    "NameError",
+    "None"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "Name lookup follows LEGB: Local, Enclosing, Global, Built-in.",
+   "reasoning": "inner has no local x, so lookup moves to the enclosing function's x before reaching the global.",
+   "commonTrap": "Skipping the enclosing scope and going straight to the global.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-FUN-011",
+   "revision": 1,
+   "subject": "python",
+   "topic": "functions",
+   "difficulty": "hard",
+   "prompt": "What does this print?",
+   "code": "def modify(lst, num):\n    lst.append(4)\n    num += 1\n    lst = [0]\nnums, n = [1, 2, 3], 10\nmodify(nums, n)\nprint(nums, n)",
+   "choices": [
+    "[1, 2, 3, 4] 10",
+    "[0] 11",
+    "[1, 2, 3] 10",
+    "[1, 2, 3, 4] 11"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "Arguments are passed by object reference: mutating the object is visible to the caller, rebinding the local name is not.",
+   "reasoning": "append mutates the caller's list. `num += 1` rebinds a local name to a new int. `lst = [0]` rebinds the local name only.",
+   "commonTrap": "Framing it as pass-by-value vs pass-by-reference. Ask instead: mutation or rebinding?",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-FUN-012",
+   "revision": 1,
+   "subject": "python",
+   "topic": "functions",
+   "difficulty": "easy",
+   "prompt": "What does this print?",
+   "code": "ops = {\"add\": lambda a, b: a + b, \"mul\": lambda a, b: a * b}\nprint(ops[\"mul\"](3, 4))",
+   "choices": [
+    "12",
+    "7",
+    "TypeError",
+    "<function <lambda>>"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "Functions are first-class objects: you can store them in dicts and call them later.",
+   "reasoning": "ops['mul'] is a function, and (3, 4) calls it. This dispatch-table pattern replaces long if/elif chains.",
+   "commonTrap": "Forgetting the call parentheses and printing the function object.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-FUN-013",
+   "revision": 1,
+   "subject": "python",
+   "topic": "functions",
+   "difficulty": "hard",
+   "prompt": "What does this print?",
+   "code": "def f(a, /, b):\n    return a + b\nprint(f(a=1, b=2))",
+   "choices": [
+    "3",
+    "TypeError",
+    "SyntaxError",
+    "None"
+   ],
+   "correctIndex": 1,
+   "keyIdea": "Parameters before `/` are positional-only (Python 3.8+).",
+   "reasoning": "a cannot be passed by name. f(1, b=2) and f(1, 2) both work.",
+   "commonTrap": "Confusing `/` (positional-only before it) with `*` (keyword-only after it).",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-FUN-014",
+   "revision": 1,
+   "subject": "python",
+   "topic": "functions",
+   "difficulty": "easy",
+   "prompt": "What does this print?",
+   "code": "def fact(n):\n    return 1 if n <= 1 else n * fact(n - 1)\nprint(fact(5))",
+   "choices": [
+    "120",
+    "24",
+    "15",
+    "RecursionError"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "Recursion needs a base case plus a step that moves toward it.",
+   "reasoning": "5 * 4 * 3 * 2 * 1 = 120. The base case n <= 1 stops the recursion. Python's default recursion limit is about 1000 frames.",
+   "commonTrap": "Writing the base case as n == 1, which recurses forever for 0 or negative input.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-FUN-015",
+   "revision": 1,
+   "subject": "python",
+   "topic": "functions",
+   "difficulty": "medium",
+   "prompt": "What does Python do at runtime with the hints in `def f(x: int) -> str:`?",
+   "choices": [
+    "Raises TypeError if x is not an int",
+    "Converts x to int automatically",
+    "Nothing is enforced; hints are stored in `f.__annotations__` for tools like mypy",
+    "Compiles f to faster machine code"
+   ],
+   "correctIndex": 2,
+   "keyIdea": "Type hints are metadata. The interpreter does not check them.",
+   "reasoning": "f('hello') runs fine at runtime. Static checkers (mypy, pyright) and libraries like pydantic read the hints.",
+   "commonTrap": "Assuming hints give runtime validation.",
+   "monoChoices": false
+  },
+  {
+   "id": "PY-OOP-001",
+   "revision": 1,
+   "subject": "python",
+   "topic": "oop",
+   "difficulty": "easy",
+   "prompt": "In `def bark(self):` inside a class, what is `self`?",
+   "choices": [
+    "A keyword that refers to the class",
+    "The instance the method was called on, passed automatically",
+    "A global variable for the current object",
+    "Optional; you can omit it in the definition"
+   ],
+   "correctIndex": 1,
+   "keyIdea": "`obj.method()` is shorthand for `Class.method(obj)`; self is that obj.",
+   "reasoning": "self is an ordinary first parameter. The name is a convention, not a keyword, and Python passes the instance in for you.",
+   "commonTrap": "Leaving self out of the definition, which gives 'takes 0 positional arguments but 1 was given'.",
+   "monoChoices": false
+  },
+  {
+   "id": "PY-OOP-002",
+   "revision": 1,
+   "subject": "python",
+   "topic": "oop",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "class Dog:\n    tricks = []\n    def __init__(self, name):\n        self.name = name\n    def add(self, t):\n        self.tricks.append(t)\na, b = Dog(\"a\"), Dog(\"b\")\na.add(\"sit\")\nprint(b.tricks)",
+   "choices": [
+    "[]",
+    "['sit']",
+    "AttributeError",
+    "None"
+   ],
+   "correctIndex": 1,
+   "keyIdea": "A class attribute is shared by every instance; a mutable one is shared state.",
+   "reasoning": "tricks lives on the class, and append mutates that one list. Create per-instance state in __init__: `self.tricks = []`.",
+   "commonTrap": "The class-level version of the mutable default argument bug.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-OOP-003",
+   "revision": 1,
+   "subject": "python",
+   "topic": "oop",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "class C:\n    count = 0\na, b = C(), C()\na.count = 5\nprint(a.count, b.count, C.count)",
+   "choices": [
+    "5 0 0",
+    "5 5 5",
+    "5 5 0",
+    "0 0 0"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "Assigning through an instance creates an instance attribute that shadows the class attribute.",
+   "reasoning": "a.count = 5 adds count to a's own __dict__. b and C still see the class attribute 0.",
+   "commonTrap": "Expecting the assignment to update the class. Mutation (as with a list) differs from assignment.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-OOP-004",
+   "revision": 1,
+   "subject": "python",
+   "topic": "oop",
+   "difficulty": "easy",
+   "prompt": "What does this print?",
+   "code": "class A:\n    def hello(self):\n        return \"A\"\nclass B(A):\n    def hello(self):\n        return \"B+\" + super().hello()\nprint(B().hello())",
+   "choices": [
+    "B+A",
+    "B",
+    "A",
+    "RecursionError"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "`super()` calls the next class's version of a method in the MRO.",
+   "reasoning": "B overrides hello, then delegates to A's hello through super(). The same pattern appears as `super().__init__()` in PyTorch `nn.Module` subclasses.",
+   "commonTrap": "Calling `self.hello()` inside the override, which recurses forever.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-OOP-005",
+   "revision": 1,
+   "subject": "python",
+   "topic": "oop",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "class P:\n    def __repr__(self):\n        return \"P()\"\n    def __str__(self):\n        return \"a P\"\np = P()\nprint(p, [p])",
+   "choices": [
+    "a P [P()]",
+    "a P [a P]",
+    "P() [P()]",
+    "P() [a P]"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "print uses __str__; containers display their items with __repr__.",
+   "reasoning": "print(p) shows 'a P'. Printing the list calls repr on each element, giving P().",
+   "commonTrap": "Implementing only __str__ and getting unhelpful default reprs in lists and the debugger. Implement __repr__ first.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-OOP-006",
+   "revision": 1,
+   "subject": "python",
+   "topic": "oop",
+   "difficulty": "hard",
+   "prompt": "What does this print?",
+   "code": "class Bag:\n    def __init__(self, items):\n        self.items = items\n    def __len__(self):\n        return len(self.items)\nprint(len(Bag([1, 2, 3])), bool(Bag([])))",
+   "choices": [
+    "3 False",
+    "3 True",
+    "TypeError",
+    "3 None"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "With no __bool__, truth testing falls back to __len__ (0 means falsy).",
+   "reasoning": "len calls __len__, giving 3. The empty Bag has length 0, so it is falsy. Without either method, every object is truthy.",
+   "commonTrap": "Assuming custom objects are always truthy.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-OOP-007",
+   "revision": 1,
+   "subject": "python",
+   "topic": "oop",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "class Temp:\n    def __init__(self, c):\n        self.c = c\n    @property\n    def f(self):\n        return self.c * 9 / 5 + 32\nt = Temp(100)\nprint(t.f)",
+   "choices": [
+    "212.0",
+    "<bound method>",
+    "TypeError",
+    "212"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "@property makes a method read like an attribute; you access it without parentheses.",
+   "reasoning": "t.f runs the getter and returns 212.0. Writing t.f() would call the float 212.0 and raise TypeError.",
+   "commonTrap": "Adding call parentheses to a property.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-OOP-008",
+   "revision": 1,
+   "subject": "python",
+   "topic": "oop",
+   "difficulty": "medium",
+   "prompt": "Which decorator gives a method the class (`cls`) instead of an instance, and is typically used for alternate constructors like `Date.from_string(...)`?",
+   "choices": [
+    "@staticmethod",
+    "@classmethod",
+    "@property",
+    "@abstractmethod"
+   ],
+   "correctIndex": 1,
+   "keyIdea": "@classmethod receives cls; @staticmethod receives neither cls nor self.",
+   "reasoning": "A classmethod can call `cls(...)`, so subclasses inherit constructors that build the right type. A staticmethod is a plain function namespaced in the class.",
+   "commonTrap": "Using @staticmethod for factories and hard-coding the class name, which breaks for subclasses.",
+   "monoChoices": false
+  },
+  {
+   "id": "PY-OOP-009",
+   "revision": 1,
+   "subject": "python",
+   "topic": "oop",
+   "difficulty": "hard",
+   "prompt": "What does this print?",
+   "code": "class A:\n    def who(self): return \"A\"\nclass B(A):\n    def who(self): return \"B\"\nclass C(A):\n    def who(self): return \"C\"\nclass D(B, C):\n    pass\nprint(D().who(), [k.__name__ for k in D.__mro__])",
+   "choices": [
+    "B ['D', 'B', 'C', 'A', 'object']",
+    "C ['D', 'C', 'B', 'A', 'object']",
+    "B ['D', 'B', 'A', 'C', 'object']",
+    "TypeError"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "The method resolution order (C3 linearisation) lists base classes left to right, with each class before its parents.",
+   "reasoning": "D(B, C) checks B first. A comes after both B and C because they share it as a parent.",
+   "commonTrap": "Assuming depth-first order (D, B, A, C), which visits A too early.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-OOP-010",
+   "revision": 1,
+   "subject": "python",
+   "topic": "oop",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "from dataclasses import dataclass\n@dataclass\nclass Point:\n    x: int\n    y: int = 0\np = Point(3)\nprint(p, p == Point(3, 0))",
+   "choices": [
+    "Point(x=3, y=0) True",
+    "<Point object> False",
+    "Point(3, 0) True",
+    "TypeError"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "@dataclass generates __init__, __repr__ and __eq__ from the annotated fields.",
+   "reasoning": "Defaults fill y = 0. The generated __eq__ compares fields, so equal values mean equal objects.",
+   "commonTrap": "Using a mutable default like `items: list = []`. Use `field(default_factory=list)`.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-OOP-011",
+   "revision": 1,
+   "subject": "python",
+   "topic": "oop",
+   "difficulty": "hard",
+   "prompt": "What does this print?",
+   "code": "class K:\n    def __init__(self, v):\n        self.v = v\n    def __eq__(self, other):\n        return self.v == other.v\ns = {K(1)}\nprint(s)",
+   "choices": [
+    "{<K object>}",
+    "TypeError",
+    "set()",
+    "{1}"
+   ],
+   "correctIndex": 1,
+   "keyIdea": "Defining __eq__ without __hash__ sets __hash__ to None, making instances unhashable.",
+   "reasoning": "Equal objects must have equal hashes, so Python removes the default identity hash. Define `__hash__` (e.g. `hash(self.v)`) or use `@dataclass(frozen=True)`.",
+   "commonTrap": "Adding __eq__ and then being surprised that instances fail as dict keys.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-OOP-012",
+   "revision": 1,
+   "subject": "python",
+   "topic": "oop",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "class A: pass\nclass B(A): pass\nprint(isinstance(B(), A), issubclass(A, B), type(B()) == A)",
+   "choices": [
+    "True False False",
+    "True True False",
+    "False False False",
+    "True False True"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "isinstance respects inheritance; an exact `type(x) == C` check does not.",
+   "reasoning": "A B instance is also an A. A is not a subclass of B. type(B()) is exactly B, not A.",
+   "commonTrap": "Using `type(x) == C` for type checks and breaking subclasses.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-OOP-013",
+   "revision": 1,
+   "subject": "python",
+   "topic": "oop",
+   "difficulty": "hard",
+   "prompt": "What does `__slots__ = ('x', 'y')` in a class body do?",
+   "choices": [
+    "Makes x and y private",
+    "Removes the per-instance __dict__, saving memory and blocking attributes not listed",
+    "Makes x and y class-level constants",
+    "Makes the class thread-safe"
+   ],
+   "correctIndex": 1,
+   "keyIdea": "__slots__ replaces the instance __dict__ with fixed storage for the listed attributes.",
+   "reasoning": "Each instance gets compact fixed storage, which matters when you create millions of small objects. Assigning an attribute not in __slots__ raises AttributeError.",
+   "commonTrap": "Treating it as an access-control feature.",
+   "monoChoices": false
+  },
+  {
+   "id": "PY-OOP-014",
+   "revision": 1,
+   "subject": "python",
+   "topic": "oop",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "class Acct:\n    def __init__(self):\n        self.__bal = 100\na = Acct()\nprint(a._Acct__bal)\nprint(a.__bal)",
+   "choices": [
+    "100\nAttributeError",
+    "100\n100",
+    "AttributeError",
+    "100\nNone"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "A double leading underscore triggers name mangling to `_ClassName__attr`. It is not real privacy.",
+   "reasoning": "Inside the class, self.__bal is stored as _Acct__bal. From outside, `a.__bal` is not mangled, so it is not found.",
+   "commonTrap": "Believing `__x` makes an attribute truly private. A single `_x` is the usual 'internal' convention.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-OOP-015",
+   "revision": 1,
+   "subject": "python",
+   "topic": "oop",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "from abc import ABC, abstractmethod\nclass Shape(ABC):\n    @abstractmethod\n    def area(self): ...\ns = Shape()\nprint(s)",
+   "choices": [
+    "<Shape object>",
+    "TypeError",
+    "NotImplementedError",
+    "None"
+   ],
+   "correctIndex": 1,
+   "keyIdea": "A class with unimplemented abstract methods cannot be instantiated.",
+   "reasoning": "Python raises TypeError at instantiation. A subclass that implements area can be created normally.",
+   "commonTrap": "Expecting the error only when the abstract method is called.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-ERR-001",
+   "revision": 1,
+   "subject": "python",
+   "topic": "errors",
+   "difficulty": "easy",
+   "prompt": "What does this print?",
+   "code": "try:\n    x = 1\nexcept ValueError:\n    print(\"except\")\nelse:\n    print(\"else\")\nfinally:\n    print(\"finally\")",
+   "choices": [
+    "else\nfinally",
+    "finally",
+    "except\nfinally",
+    "else"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "`else` runs only if the try block raised nothing; `finally` always runs.",
+   "reasoning": "No exception occurred, so the else block runs, then finally.",
+   "commonTrap": "Thinking `else` belongs to the except clause.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-ERR-002",
+   "revision": 1,
+   "subject": "python",
+   "topic": "errors",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "def f():\n    try:\n        return \"try\"\n    finally:\n        print(\"cleanup\")\nprint(f())",
+   "choices": [
+    "cleanup\ntry",
+    "try\ncleanup",
+    "try",
+    "cleanup"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "`finally` runs before the function actually returns.",
+   "reasoning": "The return value is prepared, finally prints 'cleanup', and then the caller receives 'try' and prints it.",
+   "commonTrap": "Assuming `return` skips the finally block.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-ERR-003",
+   "revision": 1,
+   "subject": "python",
+   "topic": "errors",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "try:\n    int(\"x\")\nexcept Exception:\n    print(\"general\")\nexcept ValueError:\n    print(\"value\")",
+   "choices": [
+    "general",
+    "value",
+    "general\nvalue",
+    "SyntaxError"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "Except clauses are checked top to bottom, and the first match wins.",
+   "reasoning": "ValueError is a subclass of Exception, so the first clause catches it and the second can never run. Put specific exceptions first.",
+   "commonTrap": "Expecting Python to pick the most specific handler.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-ERR-004",
+   "revision": 1,
+   "subject": "python",
+   "topic": "errors",
+   "difficulty": "easy",
+   "prompt": "What happens when this runs?",
+   "code": "int(\"abc\")",
+   "choices": [
+    "TypeError",
+    "ValueError",
+    "SyntaxError",
+    "KeyError"
+   ],
+   "correctIndex": 1,
+   "keyIdea": "ValueError means the right type with an unacceptable value; TypeError means the wrong type.",
+   "reasoning": "'abc' is a string, which int() accepts, but its content is not a number. `int([1])` would be a TypeError.",
+   "commonTrap": "Mixing up ValueError and TypeError.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-ERR-005",
+   "revision": 1,
+   "subject": "python",
+   "topic": "errors",
+   "difficulty": "easy",
+   "prompt": "What does `with open('f.txt') as fh:` guarantee?",
+   "choices": [
+    "The file is read into memory",
+    "The file is closed when the block exits, even if an exception is raised",
+    "The file is locked against other processes",
+    "The file is created if it does not exist"
+   ],
+   "correctIndex": 1,
+   "keyIdea": "`with` calls the object's __exit__ on every exit path.",
+   "reasoning": "It replaces try/finally: close(). The same pattern manages locks, database transactions and `torch.no_grad()`.",
+   "commonTrap": "Thinking `with` is only about files.",
+   "monoChoices": false
+  },
+  {
+   "id": "PY-ERR-006",
+   "revision": 1,
+   "subject": "python",
+   "topic": "errors",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "class InsufficientFunds(Exception):\n    pass\ntry:\n    raise InsufficientFunds(\"need 50\")\nexcept Exception as e:\n    print(type(e).__name__, e)",
+   "choices": [
+    "InsufficientFunds need 50",
+    "Exception need 50",
+    "InsufficientFunds",
+    "need 50"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "Custom exceptions subclass Exception; str(e) is the message passed in.",
+   "reasoning": "The handler catches the subclass through its base class. type(e) is still the custom class.",
+   "commonTrap": "Subclassing BaseException, which bare `except Exception` handlers will not catch.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-ERR-007",
+   "revision": 1,
+   "subject": "python",
+   "topic": "errors",
+   "difficulty": "hard",
+   "prompt": "What does this print?",
+   "code": "class Guard:\n    def __enter__(self):\n        print(\"enter\")\n        return self\n    def __exit__(self, exc_type, exc, tb):\n        print(\"exit\", exc_type.__name__ if exc_type else None)\n        return True\nwith Guard():\n    1 / 0\nprint(\"after\")",
+   "choices": [
+    "enter\nexit ZeroDivisionError\nafter",
+    "enter\nZeroDivisionError",
+    "enter\nexit None\nafter",
+    "enter\nexit ZeroDivisionError\nZeroDivisionError"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "If __exit__ returns a truthy value, the exception is suppressed.",
+   "reasoning": "__exit__ receives the exception details, prints them, and returns True, so execution continues after the with block.",
+   "commonTrap": "Returning True by accident and hiding real errors. Return None or False to let them propagate.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-ERR-008",
+   "revision": 1,
+   "subject": "python",
+   "topic": "errors",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "from contextlib import contextmanager\n@contextmanager\ndef tag(name):\n    print(f\"<{name}>\")\n    yield\n    print(f\"</{name}>\")\nwith tag(\"b\"):\n    print(\"hi\")",
+   "choices": [
+    "<b>\nhi\n</b>",
+    "hi\n<b>\n</b>",
+    "<b>\n</b>\nhi",
+    "TypeError"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "@contextmanager turns a generator into a context manager: code before yield is setup, code after is teardown.",
+   "reasoning": "The with body runs at the yield point. To guarantee teardown when the body raises, wrap the yield in try/finally.",
+   "commonTrap": "Forgetting try/finally around the yield, so cleanup is skipped on error.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-ERR-009",
+   "revision": 1,
+   "subject": "python",
+   "topic": "errors",
+   "difficulty": "medium",
+   "prompt": "Inside an `except` block, what does a bare `raise` do?",
+   "choices": [
+    "Raises a new generic Exception",
+    "Re-raises the exception being handled, keeping its traceback",
+    "Exits the program silently",
+    "It is a SyntaxError"
+   ],
+   "correctIndex": 1,
+   "keyIdea": "A bare `raise` re-raises the current exception unchanged.",
+   "reasoning": "Use it to log and propagate. `raise NewError(...) from e` wraps it while keeping the original as the cause.",
+   "commonTrap": "Writing `raise e`, which works but adds the current line to the traceback.",
+   "monoChoices": false
+  },
+  {
+   "id": "PY-ERR-010",
+   "revision": 1,
+   "subject": "python",
+   "topic": "errors",
+   "difficulty": "hard",
+   "prompt": "What does this print?",
+   "code": "def f():\n    try:\n        return 1\n    finally:\n        return 2\nprint(f())",
+   "choices": [
+    "1",
+    "2",
+    "1\n2",
+    "SyntaxError"
+   ],
+   "correctIndex": 1,
+   "keyIdea": "A `return` in finally overrides any earlier return or exception.",
+   "reasoning": "The finally block runs last and its return replaces the pending value 1. It would also swallow an exception, which is why linters (and Python 3.14's SyntaxWarning) flag it.",
+   "commonTrap": "Putting return or break in finally and hiding errors.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-ERR-011",
+   "revision": 1,
+   "subject": "python",
+   "topic": "errors",
+   "difficulty": "medium",
+   "prompt": "What does the Pythonic 'EAFP' style mean?",
+   "choices": [
+    "Check every precondition before acting (if key in d: ...)",
+    "Attempt the operation and handle the exception if it fails",
+    "Use assert statements for all validation",
+    "Avoid exceptions entirely for performance"
+   ],
+   "correctIndex": 1,
+   "keyIdea": "EAFP is 'Easier to Ask Forgiveness than Permission': try, then catch.",
+   "reasoning": "`try: v = d[k] except KeyError: ...` avoids race conditions between a check and its use, and is idiomatic Python. The opposite style is LBYL, 'Look Before You Leap'.",
+   "commonTrap": "Wrapping huge blocks in try. Keep the try body small so you catch only the error you expect.",
+   "monoChoices": false
+  },
+  {
+   "id": "PY-ERR-012",
+   "revision": 1,
+   "subject": "python",
+   "topic": "errors",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "d = {}\ntry:\n    d[\"x\"]\nexcept KeyError as e:\n    print(\"missing\", e)",
+   "choices": [
+    "missing 'x'",
+    "missing x",
+    "missing KeyError",
+    "KeyError"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "str() of a KeyError is the repr of the missing key, so it includes quotes.",
+   "reasoning": "The handler catches the error and prints 'missing' followed by 'x' in quotes.",
+   "commonTrap": "Not knowing which key was missing. The exception message tells you.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-GEN-001",
+   "revision": 1,
+   "subject": "python",
+   "topic": "generators",
+   "difficulty": "easy",
+   "prompt": "What does this print?",
+   "code": "def gen():\n    yield 1\n    yield 2\ng = gen()\nprint(next(g), next(g))",
+   "choices": [
+    "1 2",
+    "1 1",
+    "[1, 2]",
+    "<generator> <generator>"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "Each next() resumes the generator until its next yield.",
+   "reasoning": "The first next stops at `yield 1`, the second resumes and stops at `yield 2`.",
+   "commonTrap": "Thinking calling gen() runs the body. It only creates the generator object.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-GEN-002",
+   "revision": 1,
+   "subject": "python",
+   "topic": "generators",
+   "difficulty": "medium",
+   "prompt": "What happens when this runs?",
+   "code": "g = (x for x in [1])\nnext(g)\nnext(g)",
+   "choices": [
+    "None",
+    "StopIteration",
+    "IndexError",
+    "1"
+   ],
+   "correctIndex": 1,
+   "keyIdea": "An exhausted iterator raises StopIteration on next().",
+   "reasoning": "The single value is consumed by the first next. For loops catch StopIteration for you; manual next() calls do not.",
+   "commonTrap": "Expecting None at the end. Use `next(g, default)` to avoid the exception.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-GEN-003",
+   "revision": 1,
+   "subject": "python",
+   "topic": "generators",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "def gen():\n    print(\"start\")\n    yield 1\ng = gen()\nprint(\"created\")\nprint(next(g))",
+   "choices": [
+    "created\nstart\n1",
+    "start\ncreated\n1",
+    "created\n1",
+    "start\n1\ncreated"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "Generators are lazy: no body code runs until the first next().",
+   "reasoning": "gen() only builds the generator. 'start' prints when next() first runs the body.",
+   "commonTrap": "Placing validation inside a generator and expecting it to run at call time.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-GEN-004",
+   "revision": 1,
+   "subject": "python",
+   "topic": "generators",
+   "difficulty": "easy",
+   "prompt": "What does this print?",
+   "code": "print(next(iter([]), \"empty\"))",
+   "choices": [
+    "empty",
+    "StopIteration",
+    "None",
+    "[]"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "`next(iterator, default)` returns the default instead of raising StopIteration.",
+   "reasoning": "The iterator over an empty list is exhausted immediately, so the default is returned. A common idiom: `next((x for x in xs if cond(x)), None)` to find the first match.",
+   "commonTrap": "Calling next on a list directly. You need iter() first.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-GEN-005",
+   "revision": 1,
+   "subject": "python",
+   "topic": "generators",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "def inner():\n    yield 1\n    yield 2\ndef outer():\n    yield 0\n    yield from inner()\nprint(list(outer()))",
+   "choices": [
+    "[0, 1, 2]",
+    "[0, <generator>]",
+    "[0, [1, 2]]",
+    "[1, 2, 0]"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "`yield from` delegates to a sub-iterator, yielding each of its values.",
+   "reasoning": "outer yields 0, then every value from inner. It replaces `for v in inner(): yield v`.",
+   "commonTrap": "Writing `yield inner()`, which yields the generator object itself.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-GEN-006",
+   "revision": 1,
+   "subject": "python",
+   "topic": "generators",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "def shout(fn):\n    def wrapper(*args):\n        return fn(*args).upper()\n    return wrapper\n@shout\ndef greet(name):\n    return f\"hi {name}\"\nprint(greet(\"ana\"))",
+   "choices": [
+    "HI ANA",
+    "hi ana",
+    "HI ana",
+    "TypeError"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "`@deco` above a def means `func = deco(func)`.",
+   "reasoning": "greet now refers to wrapper, which calls the original greet and uppercases its result.",
+   "commonTrap": "Forgetting to return wrapper from the decorator, which leaves greet set to None.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-GEN-007",
+   "revision": 1,
+   "subject": "python",
+   "topic": "generators",
+   "difficulty": "hard",
+   "prompt": "What does this print?",
+   "code": "def deco(fn):\n    def wrapper(*a, **k):\n        return fn(*a, **k)\n    return wrapper\n@deco\ndef add(a, b):\n    return a + b\nprint(add.__name__)",
+   "choices": [
+    "add",
+    "wrapper",
+    "deco",
+    "AttributeError"
+   ],
+   "correctIndex": 1,
+   "keyIdea": "Without `functools.wraps`, a decorator replaces the function's name and docstring.",
+   "reasoning": "add is now wrapper. Put `@functools.wraps(fn)` on wrapper to copy over the metadata.",
+   "commonTrap": "Leaving out wraps, which confuses logging, debugging and documentation tools.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-GEN-008",
+   "revision": 1,
+   "subject": "python",
+   "topic": "generators",
+   "difficulty": "hard",
+   "prompt": "What does this print?",
+   "code": "def tag(t):\n    def deco(fn):\n        def wrapper():\n            return f\"<{t}>{fn()}</{t}>\"\n        return wrapper\n    return deco\n@tag(\"b\")\n@tag(\"i\")\ndef word():\n    return \"hi\"\nprint(word())",
+   "choices": [
+    "<b><i>hi</i></b>",
+    "<i><b>hi</b></i>",
+    "<b>hi</b>",
+    "TypeError"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "Stacked decorators apply bottom-up: the one nearest the def wraps first.",
+   "reasoning": "It is `word = tag('b')(tag('i')(word))`, so the i tag is innermost. A decorator with arguments is a factory that returns the real decorator.",
+   "commonTrap": "Reading the stack top-down as the order of wrapping.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-GEN-009",
+   "revision": 1,
+   "subject": "python",
+   "topic": "generators",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "from functools import lru_cache\ncalls = 0\n@lru_cache(maxsize=None)\ndef fib(n):\n    global calls\n    calls += 1\n    return n if n < 2 else fib(n - 1) + fib(n - 2)\nfib(10)\nprint(calls)",
+   "choices": [
+    "11",
+    "177",
+    "10",
+    "1"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "`lru_cache` memoises results, so each distinct argument is computed once.",
+   "reasoning": "fib(0) through fib(10) are 11 distinct inputs, each computed once. Without the cache, fib(10) makes 177 calls. Arguments must be hashable.",
+   "commonTrap": "Passing lists to a cached function, which raises TypeError.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-GEN-010",
+   "revision": 1,
+   "subject": "python",
+   "topic": "generators",
+   "difficulty": "medium",
+   "prompt": "Which methods make an object an iterator?",
+   "choices": [
+    "__iter__ and __next__",
+    "__getitem__ and __len__",
+    "__enter__ and __exit__",
+    "__call__ and __next__"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "An iterable has __iter__; an iterator has __iter__ (returning itself) and __next__.",
+   "reasoning": "for loops call iter(obj) and then next() repeatedly until StopIteration. Lists are iterables; iter(list) returns an iterator.",
+   "commonTrap": "Confusing iterables (reusable) with iterators (single pass).",
+   "monoChoices": false
+  },
+  {
+   "id": "PY-GEN-011",
+   "revision": 1,
+   "subject": "python",
+   "topic": "generators",
+   "difficulty": "hard",
+   "prompt": "What does this print?",
+   "code": "it = iter([1, 2, 3])\nprint(2 in it, list(it))",
+   "choices": [
+    "True [3]",
+    "True [1, 2, 3]",
+    "True []",
+    "False [3]"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "A membership test on an iterator consumes items up to the match.",
+   "reasoning": "`2 in it` reads 1 and then 2, finds a match and stops. Only 3 is left for list(it).",
+   "commonTrap": "Treating an iterator like a list you can scan repeatedly.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-GEN-012",
+   "revision": 1,
+   "subject": "python",
+   "topic": "generators",
+   "difficulty": "medium",
+   "prompt": "Why write `sum(x * x for x in range(10**8))` rather than `sum([x * x for x in range(10**8)])`?",
+   "choices": [
+    "The generator version gives a more accurate result",
+    "The generator yields one value at a time, so memory stays constant instead of holding 100 million items",
+    "List comprehensions cannot be passed to sum",
+    "There is no difference"
+   ],
+   "correctIndex": 1,
+   "keyIdea": "Generator expressions are lazy; list comprehensions build the whole list in memory.",
+   "reasoning": "The list version would allocate gigabytes. Streaming matters for data pipelines and large files.",
+   "commonTrap": "Defaulting to lists when you only iterate once.",
+   "monoChoices": false
+  },
+  {
+   "id": "PY-GEN-013",
+   "revision": 1,
+   "subject": "python",
+   "topic": "generators",
+   "difficulty": "hard",
+   "prompt": "What does this print?",
+   "code": "def acc():\n    total = 0\n    while True:\n        x = yield total\n        total += x\ng = acc()\nnext(g)\ng.send(5)\nprint(g.send(10))",
+   "choices": [
+    "15",
+    "10",
+    "5",
+    "TypeError"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "`send(v)` resumes a generator and makes the paused yield expression evaluate to v.",
+   "reasoning": "next primes it at yield 0. send(5) sets x = 5, total = 5, and pauses at yield 5. send(10) makes total 15 and yields it.",
+   "commonTrap": "Calling send with a value before priming with next(), which raises TypeError.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-STD-001",
+   "revision": 1,
+   "subject": "python",
+   "topic": "stdlib",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "import heapq\nh = [5, 1, 8, 3]\nheapq.heapify(h)\nprint(heapq.heappop(h), heapq.nsmallest(2, h))",
+   "choices": [
+    "1 [3, 5]",
+    "1 [1, 3]",
+    "8 [1, 3]",
+    "5 [1, 3]"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "heapq is a min-heap on a plain list: heappop returns the smallest item.",
+   "reasoning": "heapify is O(n). heappop removes 1. The remaining items are 3, 5, 8, so the two smallest are [3, 5].",
+   "commonTrap": "Expecting a max-heap.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-STD-002",
+   "revision": 1,
+   "subject": "python",
+   "topic": "stdlib",
+   "difficulty": "medium",
+   "prompt": "heapq only provides a min-heap. What is the common way to get max-heap behaviour for numbers?",
+   "choices": [
+    "heapq.heapify(h, reverse=True)",
+    "Push negated values and negate them again when popping",
+    "Sort the list descending once",
+    "Use heapq.maxheap()"
+   ],
+   "correctIndex": 1,
+   "keyIdea": "Negating keys turns a min-heap into a max-heap.",
+   "reasoning": "The largest x has the smallest -x. For top-k problems, a min-heap of size k is also standard.",
+   "commonTrap": "Looking for a reverse flag. heapq has none in its public API.",
+   "monoChoices": false
+  },
+  {
+   "id": "PY-STD-003",
+   "revision": 1,
+   "subject": "python",
+   "topic": "stdlib",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "from collections import deque\nq = deque([1, 2, 3])\nq.appendleft(0)\nq.pop()\nprint(list(q), q.popleft())",
+   "choices": [
+    "[0, 1, 2] 0",
+    "[1, 2] 0",
+    "[0, 1, 2, 3] 0",
+    "[0, 1] 2"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "A deque supports O(1) appends and pops at both ends.",
+   "reasoning": "appendleft gives [0, 1, 2, 3] and pop removes 3. list(q) is built before popleft runs, so it shows [0, 1, 2], then popleft returns 0.",
+   "commonTrap": "Forgetting that print's arguments are evaluated left to right.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-STD-004",
+   "revision": 1,
+   "subject": "python",
+   "topic": "stdlib",
+   "difficulty": "easy",
+   "prompt": "For a BFS queue, why use `collections.deque` instead of a list with `pop(0)`?",
+   "choices": [
+    "deque is sorted",
+    "deque.popleft() is O(1), while list.pop(0) is O(n) because every item shifts",
+    "Lists cannot hold tuples",
+    "deque uses less memory per item in every case"
+   ],
+   "correctIndex": 1,
+   "keyIdea": "Removing from the front of a list shifts every remaining element.",
+   "reasoning": "Over n dequeues, a list makes BFS O(n²); deque keeps it O(n).",
+   "commonTrap": "Using list.pop(0) in BFS, which is a common interview performance flag.",
+   "monoChoices": false
+  },
+  {
+   "id": "PY-STD-005",
+   "revision": 1,
+   "subject": "python",
+   "topic": "stdlib",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "import bisect\na = [1, 3, 3, 7]\nprint(bisect.bisect_left(a, 3), bisect.bisect_right(a, 3))",
+   "choices": [
+    "1 3",
+    "1 2",
+    "2 3",
+    "0 4"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "bisect_left gives the first index where x could be inserted; bisect_right gives the index after any existing equal items.",
+   "reasoning": "The 3s occupy indices 1 and 2. Left insertion point is 1; right is 3. Their difference counts the occurrences.",
+   "commonTrap": "Using bisect on an unsorted list. It assumes sorted input and does not check.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-STD-006",
+   "revision": 1,
+   "subject": "python",
+   "topic": "stdlib",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "from itertools import combinations\nprint(list(combinations(\"abc\", 2)))",
+   "choices": [
+    "[('a', 'b'), ('a', 'c'), ('b', 'c')]",
+    "[('a', 'b'), ('b', 'a'), ('a', 'c'), ('c', 'a'), ('b', 'c'), ('c', 'b')]",
+    "['ab', 'ac', 'bc']",
+    "[('a', 'a'), ('a', 'b'), ('b', 'b')]"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "combinations ignores order and never repeats an element; permutations cares about order.",
+   "reasoning": "Choosing 2 of 3 gives C(3, 2) = 3 tuples in lexicographic order of position.",
+   "commonTrap": "Confusing combinations with permutations.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-STD-007",
+   "revision": 1,
+   "subject": "python",
+   "topic": "stdlib",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "from itertools import permutations\nprint(len(list(permutations(range(4), 2))))",
+   "choices": [
+    "12",
+    "6",
+    "16",
+    "24"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "The number of ordered selections is P(n, k) = n! / (n - k)!.",
+   "reasoning": "4 choices for the first slot times 3 for the second is 12.",
+   "commonTrap": "Computing combinations (6) or product with repetition (16).",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-STD-008",
+   "revision": 1,
+   "subject": "python",
+   "topic": "stdlib",
+   "difficulty": "hard",
+   "prompt": "What does this print?",
+   "code": "from itertools import groupby\ndata = \"aabbba\"\nprint([(k, len(list(g))) for k, g in groupby(data)])",
+   "choices": [
+    "[('a', 2), ('b', 3), ('a', 1)]",
+    "[('a', 3), ('b', 3)]",
+    "[('a', 2), ('b', 3)]",
+    "{'a': 3, 'b': 3}"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "groupby groups consecutive equal items only.",
+   "reasoning": "The final 'a' is separate from the first run. Sort first if you want one group per key. Unsorted, it is perfect for run-length encoding.",
+   "commonTrap": "Expecting SQL-style GROUP BY behaviour.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-STD-009",
+   "revision": 1,
+   "subject": "python",
+   "topic": "stdlib",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "import copy\na = [[1], [2]]\nb = copy.deepcopy(a)\nb[0].append(9)\nprint(a)",
+   "choices": [
+    "[[1], [2]]",
+    "[[1, 9], [2]]",
+    "[[1], [2], [9]]",
+    "TypeError"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "deepcopy recursively copies nested objects, so nothing is shared.",
+   "reasoning": "b[0] is a brand-new inner list, so appending to it leaves a untouched.",
+   "commonTrap": "Using `.copy()` and expecting deep independence.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-STD-010",
+   "revision": 1,
+   "subject": "python",
+   "topic": "stdlib",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "from collections import namedtuple\nPt = namedtuple(\"Pt\", \"x y\")\np = Pt(1, 2)\nprint(p.x + p[1], p)",
+   "choices": [
+    "3 Pt(x=1, y=2)",
+    "3 (1, 2)",
+    "TypeError",
+    "12 Pt(x=1, y=2)"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "A namedtuple is a tuple whose fields can also be accessed by name.",
+   "reasoning": "p.x is 1 and p[1] is 2. It is immutable and has a readable repr. Use dataclasses when you need mutability.",
+   "commonTrap": "Trying `p.x = 5`. Namedtuples are immutable; use `p._replace(x=5)`.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-STD-011",
+   "revision": 1,
+   "subject": "python",
+   "topic": "stdlib",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "from functools import reduce\nprint(reduce(lambda a, b: a * b, [1, 2, 3, 4]))",
+   "choices": [
+    "24",
+    "10",
+    "[1, 2, 6, 24]",
+    "TypeError"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "reduce folds an iterable into one value by applying a function cumulatively.",
+   "reasoning": "((1 * 2) * 3) * 4 = 24. `math.prod` does this specific case more readably.",
+   "commonTrap": "Confusing reduce, which returns one value, with accumulate, which returns the running values.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-STD-012",
+   "revision": 1,
+   "subject": "python",
+   "topic": "stdlib",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "from collections import Counter\nprint(Counter(\"aab\") + Counter(\"bc\"))",
+   "choices": [
+    "Counter({'a': 2, 'b': 2, 'c': 1})",
+    "Counter({'a': 2, 'b': 1, 'c': 1})",
+    "TypeError",
+    "{'a': 2, 'b': 2, 'c': 1}"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "Counters support +, -, & and | as multiset operations.",
+   "reasoning": "Counts add per key: a 2, b 1 + 1 = 2, c 1. Subtraction drops counts that reach zero or below.",
+   "commonTrap": "Merging counters manually with loops.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-STD-013",
+   "revision": 1,
+   "subject": "python",
+   "topic": "stdlib",
+   "difficulty": "easy",
+   "prompt": "What does this print?",
+   "code": "import math\nprint(math.ceil(2.1), math.floor(-2.1), abs(-3))",
+   "choices": [
+    "3 -3 3",
+    "3 -2 3",
+    "2 -3 3",
+    "3 -2 -3"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "floor rounds toward negative infinity; ceil rounds toward positive infinity.",
+   "reasoning": "ceil(2.1) is 3. floor(-2.1) is -3, the next lower integer, not -2.",
+   "commonTrap": "Treating floor as truncation for negative numbers.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-STD-014",
+   "revision": 1,
+   "subject": "python",
+   "topic": "stdlib",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "from itertools import accumulate\nprint(list(accumulate([1, 2, 3, 4])))",
+   "choices": [
+    "[1, 3, 6, 10]",
+    "10",
+    "[1, 2, 3, 4]",
+    "[0, 1, 3, 6, 10]"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "accumulate yields running totals, i.e. prefix sums.",
+   "reasoning": "1, 1+2, 1+2+3, 1+2+3+4. Prefix sums power O(1) range-sum queries. Pass `initial=0` to get a leading 0.",
+   "commonTrap": "Expecting a leading 0 by default.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-STD-015",
+   "revision": 1,
+   "subject": "python",
+   "topic": "stdlib",
+   "difficulty": "medium",
+   "prompt": "What does this print?",
+   "code": "d = {\"a\": 3, \"b\": 7, \"c\": 5}\nprint(sorted(d.items(), key=lambda kv: kv[1], reverse=True)[:2])",
+   "choices": [
+    "[('b', 7), ('c', 5)]",
+    "[('c', 5), ('b', 7)]",
+    "['b', 'c']",
+    "[7, 5]"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "Sort `.items()` with a key on the value to rank a dict by its values.",
+   "reasoning": "Sorted by value descending gives b, c, a; the slice keeps the top two pairs. `heapq.nlargest(2, d.items(), key=...)` avoids a full sort.",
+   "commonTrap": "Sorting `d` directly, which sorts keys only.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-INT-001",
+   "revision": 1,
+   "subject": "python",
+   "topic": "internals",
+   "difficulty": "easy",
+   "prompt": "Average time complexity of `x in my_list` versus `x in my_set`?",
+   "choices": [
+    "O(1) and O(1)",
+    "O(n) and O(1)",
+    "O(log n) and O(1)",
+    "O(n) and O(log n)"
+   ],
+   "correctIndex": 1,
+   "keyIdea": "Lists are scanned linearly; sets and dicts use hash tables.",
+   "reasoning": "Converting a list to a set once, then testing membership many times, turns O(n·m) into O(n + m).",
+   "commonTrap": "Running `if x in big_list` inside a loop, which hides a quadratic algorithm.",
+   "monoChoices": false
+  },
+  {
+   "id": "PY-INT-002",
+   "revision": 1,
+   "subject": "python",
+   "topic": "internals",
+   "difficulty": "medium",
+   "prompt": "Which operation on a Python list of length n is O(n)?",
+   "choices": [
+    "lst.append(x)",
+    "lst.pop()",
+    "lst.insert(0, x)",
+    "lst[i]"
+   ],
+   "correctIndex": 2,
+   "keyIdea": "Lists are dynamic arrays: the end is cheap, the front is expensive.",
+   "reasoning": "Inserting at the front shifts every element. append is amortised O(1), pop() from the end is O(1), indexing is O(1).",
+   "commonTrap": "Assuming every list operation is O(1).",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-INT-003",
+   "revision": 1,
+   "subject": "python",
+   "topic": "internals",
+   "difficulty": "medium",
+   "prompt": "In standard CPython, why might two threads fail to speed up a CPU-bound pure-Python loop?",
+   "choices": [
+    "Python does not support threads",
+    "The Global Interpreter Lock lets only one thread execute Python bytecode at a time",
+    "Threads always run on the same CPU core by OS rule",
+    "Each thread copies the entire heap"
+   ],
+   "correctIndex": 1,
+   "keyIdea": "The GIL serialises Python bytecode execution within one process.",
+   "reasoning": "Threads still help when work waits on I/O, or inside C extensions such as NumPy and PyTorch kernels that release the GIL. Python 3.13 offers an experimental free-threaded build without the GIL.",
+   "commonTrap": "Expecting linear speedups from threading pure-Python math.",
+   "monoChoices": false
+  },
+  {
+   "id": "PY-INT-004",
+   "revision": 1,
+   "subject": "python",
+   "topic": "internals",
+   "difficulty": "medium",
+   "prompt": "What is the standard way to parallelise CPU-bound pure-Python work across cores?",
+   "choices": [
+    "threading.Thread",
+    "asyncio.gather",
+    "multiprocessing or concurrent.futures.ProcessPoolExecutor",
+    "A bigger recursion limit"
+   ],
+   "correctIndex": 2,
+   "keyIdea": "Separate processes each have their own interpreter and GIL.",
+   "reasoning": "Processes run truly in parallel. The cost is pickling arguments and results between processes. PyTorch's DataLoader with num_workers uses this model.",
+   "commonTrap": "Reaching for asyncio for CPU-bound work. It gives concurrency, not parallelism.",
+   "monoChoices": false
+  },
+  {
+   "id": "PY-INT-005",
+   "revision": 1,
+   "subject": "python",
+   "topic": "internals",
+   "difficulty": "easy",
+   "prompt": "Which workload benefits most from threads in CPython?",
+   "choices": [
+    "Computing prime numbers in pure Python",
+    "Downloading many URLs concurrently",
+    "Sorting a large list",
+    "Tight numeric loops"
+   ],
+   "correctIndex": 1,
+   "keyIdea": "I/O-bound work releases the GIL while waiting, so threads can overlap the waits.",
+   "reasoning": "While one thread waits on the network, others run. CPU-bound loops never wait, so they contend for the GIL.",
+   "commonTrap": "Treating 'concurrent' and 'parallel' as the same thing.",
+   "monoChoices": false
+  },
+  {
+   "id": "PY-INT-006",
+   "revision": 1,
+   "subject": "python",
+   "topic": "internals",
+   "difficulty": "hard",
+   "prompt": "What does this print?",
+   "code": "import asyncio\nasync def work(name, delay):\n    await asyncio.sleep(delay)\n    print(name)\nasync def main():\n    await asyncio.gather(work(\"slow\", 0.05), work(\"fast\", 0.01))\nasyncio.run(main())",
+   "choices": [
+    "fast\nslow",
+    "slow\nfast",
+    "slow",
+    "RuntimeError"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "`asyncio.gather` runs coroutines concurrently; each `await` lets the others make progress.",
+   "reasoning": "Both sleeps start together, and the shorter one finishes first. Total time is about 0.05s, not 0.06s.",
+   "commonTrap": "Calling time.sleep inside async code, which blocks the whole event loop.",
+   "monoChoices": true
+  },
+  {
+   "id": "PY-INT-007",
+   "revision": 1,
+   "subject": "python",
+   "topic": "internals",
+   "difficulty": "medium",
+   "prompt": "What happens when you call an `async def` function without awaiting it?",
+   "choices": [
+    "It runs synchronously",
+    "It returns a coroutine object and its body does not run",
+    "It runs in a background thread",
+    "SyntaxError"
+   ],
+   "correctIndex": 1,
+   "keyIdea": "Calling a coroutine function only creates a coroutine; await, gather or asyncio.run executes it.",
+   "reasoning": "Python warns 'coroutine was never awaited' when such an object is garbage-collected.",
+   "commonTrap": "Forgetting await and silently skipping the work.",
+   "monoChoices": false
+  },
+  {
+   "id": "PY-INT-008",
+   "revision": 1,
+   "subject": "python",
+   "topic": "internals",
+   "difficulty": "hard",
+   "prompt": "How does CPython free most objects?",
+   "choices": [
+    "Only via a periodic mark-and-sweep collector",
+    "Reference counting frees objects as soon as their count hits zero; a cyclic GC handles reference cycles",
+    "Objects are never freed until the process exits",
+    "You must call `del` on every object"
+   ],
+   "correctIndex": 1,
+   "keyIdea": "Reference counting provides deterministic cleanup; the `gc` module handles cycles.",
+   "reasoning": "`del x` only removes a name, decrementing the count. Cycles such as a parent and child referencing each other need the cyclic collector.",
+   "commonTrap": "Believing `del` immediately frees memory regardless of other references.",
+   "monoChoices": false
+  },
+  {
+   "id": "PY-INT-009",
+   "revision": 1,
+   "subject": "python",
+   "topic": "internals",
+   "difficulty": "easy",
+   "prompt": "Average time complexity of looking up a key in a dict?",
+   "choices": [
+    "O(1)",
+    "O(log n)",
+    "O(n)",
+    "O(n log n)"
+   ],
+   "correctIndex": 0,
+   "keyIdea": "Dicts are hash tables, giving average O(1) get, set and delete.",
+   "reasoning": "The worst case degrades with many hash collisions, but that is rare in practice. This is why dicts are the default memo and lookup structure.",
+   "commonTrap": "Assuming dicts are tree-based and ordered by key, as C++ std::map is.",
+   "monoChoices": false
+  },
+  {
+   "id": "PY-INT-010",
+   "revision": 1,
+   "subject": "python",
+   "topic": "internals",
+   "difficulty": "medium",
+   "prompt": "What algorithm does `sorted()` use, and what is its worst case?",
+   "choices": [
+    "Quicksort, O(n²)",
+    "A stable hybrid merge/insertion sort (Timsort family), O(n log n)",
+    "Heapsort, O(n log n), not stable",
+    "Bubble sort, O(n²)"
+   ],
+   "correctIndex": 1,
+   "keyIdea": "Python's sort is stable and O(n log n), and it is very fast on partly sorted data.",
+   "reasoning": "Timsort finds existing sorted runs and merges them, so nearly-sorted input approaches O(n). Stability enables multi-pass sorting.",
+   "commonTrap": "Assuming quicksort and its O(n²) worst case.",
+   "monoChoices": false
+  },
+  {
+   "id": "PY-INT-011",
+   "revision": 1,
+   "subject": "python",
+   "topic": "internals",
+   "difficulty": "medium",
+   "prompt": "A module is imported in five different files. How many times does its top-level code run?",
+   "choices": [
+    "Five times",
+    "Once; later imports reuse the cached module in sys.modules",
+    "Zero times until a function is called",
+    "Once per thread"
+   ],
+   "correctIndex": 1,
+   "keyIdea": "Imports are cached in `sys.modules`.",
+   "reasoning": "The first import executes the module; later imports just bind the cached module object. `importlib.reload` forces a re-run.",
+   "commonTrap": "Putting expensive side effects at module top level and expecting them to rerun.",
+   "monoChoices": false
+  },
+  {
+   "id": "PY-INT-012",
+   "revision": 1,
+   "subject": "python",
+   "topic": "internals",
+   "difficulty": "easy",
+   "prompt": "What does `python -m venv .venv` do?",
+   "choices": [
+    "Installs Python globally",
+    "Creates an isolated environment with its own site-packages",
+    "Upgrades pip",
+    "Compiles the project"
+   ],
+   "correctIndex": 1,
+   "keyIdea": "A virtual environment isolates a project's dependencies.",
+   "reasoning": "After activating it, pip installs go into .venv rather than the system Python. Conda environments solve the same problem and can also manage non-Python libraries.",
+   "commonTrap": "Installing everything into the base environment and creating version conflicts.",
+   "monoChoices": false
+  },
+  {
+   "id": "PY-INT-013",
+   "revision": 1,
+   "subject": "python",
+   "topic": "internals",
+   "difficulty": "hard",
+   "prompt": "What does this print?",
+   "code": "import sys\na = []\nb = [a, a]\nprint(sys.getrefcount(a) - sys.getrefcount([]))",
+   "choices": [
+    "2",
+    "3",
+    "1",
+    "0"
+   ],
+   "correctIndex": 1,
+   "keyIdea": "Every name and every container slot holding an object adds to its reference count.",
+   "reasoning": "a is referenced by the name a and twice by list b, three references more than a fresh temporary list. getrefcount's own argument adds the same +1 to both sides.",
+   "commonTrap": "Forgetting that container slots count as references, which matters for memory leaks through caches.",
+   "monoChoices": true
+  }
+ ]
+}

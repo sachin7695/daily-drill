@@ -1,0 +1,7 @@
+node_modules/
+android/
+www/
+__pycache__/
+*.p12
+*.jks
+*.keystore
